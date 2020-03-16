@@ -1,0 +1,47 @@
+.btn {
+    margin-right: 5px;
+}
+
+.btn.disabled, .btn:disabled {
+    cursor: no-drop;
+}
+
+input.ng-invalid.ng-touched
+{
+    color: #850000;
+    background: rgba(254, 186, 186, 0.5);
+    border: 1px solid #850000;
+}
+
+.userInfo{
+    font-size: small;
+    color: grey;
+    margin-top: 0px;
+    margin-bottom: 1px;
+}
+
+.userInfoAdmin{
+    color: red;
+    margin-top: 0px;
+    margin-bottom: 1px;
+    margin-left: 20px;
+}
+
+.userInfoHeader{
+    font-weight: bold;
+    margin-top: 0px;
+    margin-bottom: 1px;
+}
+
+.userInfoDiv:hover{
+    border-top-style: solid;
+    border-left-style: solid;
+    border-color: lightgrey;
+    border-width: thin;
+
+    -moz-box-shadow: 5px 5px 5px #ccc;
+    -webkit-box-shadow: 5px 5px 5px #ccc;
+    box-shadow: 5px 5px 5px #ccc;
+
+    cursor: pointer;
+}

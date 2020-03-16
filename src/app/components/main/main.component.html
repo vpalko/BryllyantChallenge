@@ -1,0 +1,176 @@
+<div class="alert alert-success" *ngIf="msgBoxType===1">
+  <strong>Success!</strong> {{msgBoxMessage}}
+</div>
+
+<div class="alert alert-info" *ngIf="msgBoxType===2">
+  <strong>Info!</strong> {{msgBoxMessage}}
+</div>
+
+<div class="alert alert-warning" *ngIf="msgBoxType===3">
+  <strong>Warning!</strong> {{msgBoxMessage}}
+</div>
+
+<div class="alert alert-danger" *ngIf="msgBoxType===4">
+  <strong>Error!</strong> {{msgBoxMessage}}
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <form (ngSubmit)="onAddItem()" [formGroup]="userForm" #f="ngForm">
+      <div class="row">
+        <div class="col-sm-6 form-group">
+          <button id="btnFind" class="btn btn-primary" type="button" (click)="findUser()"
+            [disabled]="(formState!==0 && formState!==1) || !userIsValid">Find user</button>
+
+          <label for="userid" [ngStyle]="{'margin':'0 3px 0 15px'}">#id</label>
+          <input type="text" id="userid" class="form-control" formControlName="userIDControl" [(ngModel)]="userid"
+            [ngStyle]="{'width': '100px', 'display':'inline', 'margin-left':'5px'}">
+        </div>
+        <div class="col-sm-6 form-group">
+          <div style="display: flex; justify-content: flex-end">
+            <button id="btnNew" class="btn btn-primary" type="button" *ngIf="(formState===0 || formState===1)"
+              (click)="newUser()">New
+              user</button>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="formState===1 || formState===2 || formState===3">
+        <hr>
+        <div class="row">
+          <div class="col-sm-6 form-group">
+            <label for="firstname">* First name</label>
+            <input type="text" id="firstname" class="form-control" formControlName="firstNameControl"
+              [(ngModel)]="firstname">
+            <div
+              *ngIf="(!userForm.get('firstNameControl').valid && (userForm.get('firstNameControl').dirty || userForm.get('firstNameControl').touched))"
+              class="text-danger">
+
+              <div *ngIf="userForm.get('firstNameControl').hasError('required')">
+                First name is required.
+              </div>
+              <div *ngIf="userForm.get('firstNameControl').hasError('pattern')">
+                First name is invalid.
+              </div>
+              <div *ngIf="userForm.get('firstNameControl').hasError('maxlength')">
+                First name must be not more than {{constants.FIRST_NAME_MAX_LENGTH}} characters.
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 form-group">
+            <label for="lastname">* Last name</label>
+            <input type="text" id="lastname" class="form-control" formControlName="lastNameControl"
+              [(ngModel)]="lastname">
+            <div
+              *ngIf="(!userForm.get('lastNameControl').valid && (userForm.get('lastNameControl').dirty || userForm.get('lastNameControl').touched))"
+              class="text-danger">
+
+              <div *ngIf="userForm.get('lastNameControl').hasError('required')">
+                Last name is required.
+              </div>
+              <div *ngIf="userForm.get('lastNameControl').hasError('pattern')">
+                Last name is invalid.
+              </div>
+              <div *ngIf="userForm.get('lastNameControl').hasError('maxlength')">
+                Last name must be not more than {{constants.LAST_NAME_MAX_LENGTH}} characters.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-3 form-group">
+            <label for="phone">* Phone</label>
+            <input type="text" id="phone" class="form-control" placeholder="(   )" [textMask]="{mask: phoneMask}"
+              formControlName="phoneControl" [(ngModel)]="phone">
+
+            <div
+              *ngIf="(!userForm.get('phoneControl').valid && (userForm.get('phoneControl').dirty || userForm.get('phoneControl').touched))"
+              class="text-danger">
+
+              <div *ngIf="userForm.get('phoneControl').hasError('required')">
+                Phone is required.
+              </div>
+              <div
+                *ngIf="userForm.get('phoneControl').hasError('pattern') || userForm.get('phoneControl').hasError('maxlength')">
+                Phone is invalid.
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3 form-group">
+            <label for="email">* Email</label>
+            <input type="text" id="email" class="form-control" formControlName="emailControl" [(ngModel)]="email">
+            <div
+              *ngIf="(!userForm.get('emailControl').valid && (userForm.get('emailControl').dirty || userForm.get('emailControl').touched))"
+              class="text-danger">
+
+              <div *ngIf="userForm.get('emailControl').hasError('required')">
+                Email is required.
+              </div>
+              <div
+                *ngIf="!userForm.get('emailControl').hasError('required') && (userForm.get('emailControl').hasError('pattern') || userForm.get('emailControl').hasError('invalid'))">
+                Email is invalid.
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-3 form-group">
+
+            <label for="isadmin">Is Administrator</label>
+            <select id="isadmin" class="form-control" [(ngModel)]="isadmin" formControlName="isAdminControl">
+              <option *ngFor="let l of isAdminOptions; index as i" [ngValue]="l.value">{{ l.label }}</option>
+            </select>
+
+            <div
+              *ngIf="(!userForm.get('isAdminControl').valid && (userForm.get('isAdminControl').dirty || userForm.get('isAdminControl').touched))"
+              class="text-danger">
+
+              <div *ngIf="userForm.get('isAdminControl').hasError('required')">
+                Please set whether user is administrator.
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="row">
+          <div class="col-sm-12">
+            <button id="btnEdit" class="btn btn-success" type="button" *ngIf="formState===1"
+              (click)="editUser()">Edit</button>
+            <button id="btnSave" class="btn btn-success" type="button" *ngIf="formState===2 || formState===3"
+              (click)="saveUser()" [disabled]="!userForm.valid">Save</button>
+            <button id="btnDelete" class="btn btn-danger" type="button" *ngIf="formState===1"
+              (click)="deleteUser()">Delete</button>
+            <button id="btnCancel" class="btn btn-primary" type="button"
+              *ngIf="formState===1 || formState===2 || formState===3"
+              (click)="onClear()">{{formState===2 ? 'Cancel':'Clear'}}</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row" *ngIf="users.length>0" style="margin-top: 50px">
+  <div class="col-sm-12">
+    <hr>
+    <h2>Users</h2>
+  </div>
+</div>
+
+<div class="row userInfoDiv" *ngFor="let u of users; index as i" (click)="loadUser(i)">
+  <div class="col-sm-12">
+    <div>
+      <p class="userInfoHeader">{{u.lastname + ', ' + u.firstname}}
+        <span class="userInfoAdmin" *ngIf="u.isadmin">Administrator</span>
+      </p>
+    </div>
+
+    <div style="padding-left: 15px">
+      <p class="userInfo">id: {{u.userid}}</p>
+      <p class="userInfo">email: {{u.email}}</p>
+      <p class="userInfo">phone: {{u.phone}}</p>
+    </div>
+  </div>
+</div>
