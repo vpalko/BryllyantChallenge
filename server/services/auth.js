@@ -52,7 +52,7 @@ class Auth {
         var phone = req.body.phone;
         var isadmin = req.body.isadmin;
 
-        if(!id || (!email && !phone && !firstname && !lastname && !isadmin)) {
+        if(!id || (!email && !phone && !firstname && !lastname && isadmin === undefined)) {
             return res.status(400).send({ msg: SERVICE_CONSTANTS.BAD_REQUEST });
         }
 
@@ -77,6 +77,28 @@ class Auth {
         });
     }
 
+    deleteuser(req, res) {
+        //get credentials coming in from form
+        var id = req.params.id;
+
+        if(!id) {
+            return res.status(400).send({ msg: SERVICE_CONSTANTS.BAD_REQUEST });
+        }
+
+        let query = `DELETE FROM bryllyant.userprofile WHERE id=${id}`;
+
+        PostgresHelper.query(query, (err, response) => {
+            logger.debug({ context: { query } }, 'Dumping query');
+            if (err) {
+                logger.error({ err: err })
+                return res.status(400).send(err);
+            } else {
+                // logger.debug(response.rows[0]);
+                return res.status(200).send({ msg: SERVICE_CONSTANTS.USER.DELETED });
+            }
+        });
+    }
+
     addUser(req, res) {
         //get credentials coming in from form
         var email = req.body.email;
@@ -86,7 +108,7 @@ class Auth {
         var pwd = req.body.pwd;
         var isadmin = req.body.isadmin;
 
-        if(!email || !phone || !firstname || !lastname || !pwd || !isadmin) {
+        if(!email || !phone || !firstname || !lastname || !pwd || isadmin === undefined) {
             return res.status(400).send({ msg: SERVICE_CONSTANTS.BAD_REQUEST });
         }
 
@@ -97,7 +119,7 @@ class Auth {
             }
 
             bcrypt.hash(pwd, salt, function (err, hash) {
-                let query = 'INSERT INTO bryllyant.userprofile(email, phone, firstname, lastname, pwd, isadmin) VALUES($1, $2, $3, $4, $5)';
+                let query = 'INSERT INTO bryllyant.userprofile(email, phone, firstname, lastname, pwd, isadmin) VALUES($1, $2, $3, $4, $5, $6)';
                 let data = [email, phone, firstname, lastname, hash, isadmin];
 
                 PostgresHelper.query(query, data, (err, response) => {
@@ -105,7 +127,7 @@ class Auth {
                     if (err) {
                         logger.error({ err: err })
                         if (err.code && err.code === POSTGRES_ERRORS.UNIQUE_VIOLATION) {
-                            return res.status(400).send({ error: SERVICE_CONSTANTS.USER.ALREADY_EXISTS });
+                            return res.status(400).send({ error: SERVICE_CONSTANTS.USER.EMAIL_ALREADY_EXISTS });
                         } else {
                             return res.status(400).send(err);
                         }

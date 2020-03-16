@@ -16,7 +16,11 @@ router.post('/login', (req, res) => {
 
 router.put('/:id', auth.verifyToken, auth.isAdmin, (req, res) => {
     auth.updateuser(req, res);
-})
+});
+
+router.delete('/:id', auth.verifyToken, auth.isAdmin, (req, res) => {
+    auth.deleteuser(req, res);
+});
 
 router.get('/:id', auth.verifyToken, auth.isAdmin, (req, res) => {
     auth.getuser(req, res);

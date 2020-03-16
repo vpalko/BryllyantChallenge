@@ -46,20 +46,12 @@ export class MainComponent implements OnInit {
   ngOnInit() {
     this.loadUsers();
     this.buildFormComponents();
-
-    this.userForm.get('userIDControl').valueChanges.subscribe(value => {
-      this.userIdIsValid(value)
-    });
   }
 
   countryForm: FormGroup;
 
   buildFormComponents() {
     this.userForm = this.formBuilder.group({
-      userIDControl: ['',
-        [
-          Validators.pattern(this.constants.NUMBER_PATTERN)
-        ]],
       firstNameControl: [{ value: '', disabled: true },
       [
         Validators.required,
@@ -111,18 +103,8 @@ export class MainComponent implements OnInit {
     this.enableFormControls();
   }
 
-  userIdIsValid(value) {
-   // this.showMessageBox(0, '');
-    this.userIsValid = !this.userForm.controls['userIDControl'].hasError('pattern') && value !== null && value !== undefined && value.toString().trim() !== ''
-  }
 
   enableFormControls() {
-    if (this.formState === 0){
-      this.userForm.controls['userIDControl'].enable();
-    } else {
-      this.userForm.controls['userIDControl'].disable();
-    }
-
     if (this.formState === 0 || this.formState === 1) {//initial state or user found
       this.userForm.controls['firstNameControl'].disable();
       this.userForm.controls['lastNameControl'].disable();
@@ -156,6 +138,9 @@ export class MainComponent implements OnInit {
   }
 
   loadUser(id){
+    this.showMessageBox(0, '');
+    this.formState = 1;
+    
     this.userid = this.users[id].userid;
     this.email = this.users[id].email;
     this.firstname = this.users[id].firstname;
@@ -187,88 +172,10 @@ export class MainComponent implements OnInit {
       });
   }
 
-  findUser() {
-    this.httpClient.get(this.constants.REQRES_API_BASE_URL + this.constants.REQRES_API_USER_URL + '/' + this.userid).subscribe((res) => {
-      //check if user present in users:User[] .. since reqres.in doesn't really save the data
-      let userIdx = lodash.findIndex(this.users, {'userid': this.userid});
-
-      if (Object.keys(res).length === 0) {
-        if(userIdx!==-1){
-          this.showMessageBox(0, '');
-          this.formState = 1;
-          this.userid = this.users[userIdx].userid;
-          this.firstname = this.users[userIdx].firstname;
-          this.lastname = this.users[userIdx].lastname;
-          this.phone = this.users[userIdx].phone;
-          this.email = this.users[userIdx].email;
-          this.pwd = this.users[userIdx].pwd;
-          this.isadmin = this.users[userIdx].isadmin;
-          this.enableFormControls();
-        } else {
-          this.gbForm.reset();
-          this.showMessageBox(3, 'User not found.');
-          this.formState = 0;
-        }
-      } else {
-        this.showMessageBox(0, '');
-        this.formState = 1;
-        if(userIdx==-1){//add to users:User[]
-          this.users.push(new User(
-            res['body'][0].id, 
-            res['body'][0].email,
-            res['body'][0].firstname, 
-            res['body'][0].lastname,
-            res['body'][0].phone,
-            res['body'][0].pwd,
-            res['body'][0].isadmin
-            ));
-
-            this.userid = res['body'][0].id;
-            this.email = res['body'][0].email;
-            this.firstname = res['body'][0].firstname;
-            this.lastname = res['body'][0].lastname;
-            this.phone = res['body'][0].phone;
-            this.pwd = res['body'][0].pwd;
-            this.isadmin = res['body'][0].isadmin;
-        } else {
-          this.userid = this.users[userIdx].userid;
-          this.email = this.users[userIdx].email;
-          this.firstname = this.users[userIdx].firstname;
-          this.lastname = this.users[userIdx].lastname;
-          this.phone = this.users[userIdx].phone;
-          this.pwd = this.users[userIdx].pwd;
-          this.isadmin = this.users[userIdx].isadmin;
-        }
-
-        this.enableFormControls();
-      }
-    },
-      (error) => {
-        let userIdx = lodash.findIndex(this.users, {'userid': this.userid});
-        if(userIdx!==-1){
-          this.showMessageBox(0, '');
-          this.formState = 1;
-          this.userid = this.users[userIdx].userid;
-          this.firstname = this.users[userIdx].firstname;
-          this.lastname = this.users[userIdx].lastname;
-          this.phone = this.users[userIdx].phone;
-          this.email = this.users[userIdx].email;
-          this.pwd = this.users[userIdx].pwd;
-          this.isadmin = this.users[userIdx].isadmin;
-          this.enableFormControls();
-        } else {
-          this.gbForm.reset();
-          this.showMessageBox(3, 'User not found.');
-          this.formState = 0;
-        }
-      });
-  }
-
   deleteUser() {
     this.httpClient.delete(this.constants.REQRES_API_BASE_URL + this.constants.REQRES_API_USER_URL + '/' + this.userid)
       .subscribe(
-        (val) => {
-          //remove from users:User[]
+        data => {
           let userIdx = lodash.findIndex(this.users, {'userid': this.userid});
           if(userIdx!=-1){
             this.users.splice(userIdx, 1);
@@ -277,12 +184,10 @@ export class MainComponent implements OnInit {
           this.onClear();
           this.showMessageBox(1, 'User deleted successfully');
         },
-        response => {
-          this.showMessageBox(4, 'Unable to deleted the user');
-        },
-        () => {
-
-        });
+        error => {
+          this.showMessageBox(4, 'Unable to delete the user');
+        }
+      );
   }
 
   saveUser(){
