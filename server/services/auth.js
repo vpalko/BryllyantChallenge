@@ -2,11 +2,11 @@ const PostgresHelper = require('../utils/postgres-helper');
 const POSTGRES_ERRORS = require('pg-error-constants');
 const SERVICE_CONSTANTS = require('../utils/service-constants');
 
-var bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-var log4js = require('log4js');
-var logger = log4js.getLogger();
+const log4js = require('log4js');
+const logger = log4js.getLogger();
 logger.level = 'debug';
 
 class Auth {
@@ -122,7 +122,7 @@ class Auth {
                 let query = 'INSERT INTO bryllyant.userprofile(email, phone, firstname, lastname, pwd, isadmin) VALUES($1, $2, $3, $4, $5, $6)';
                 let data = [email, phone, firstname, lastname, hash, isadmin];
 
-                PostgresHelper.query(query, data, (err, response) => {
+                PostgresHelper.queryData(query, data, (err, response) => {
                     logger.debug({ context: { query } }, 'Dumping query');
                     if (err) {
                         logger.error({ err: err })
@@ -145,30 +145,32 @@ class Auth {
             return res.status(400).send({ msg: SERVICE_CONSTANTS.BAD_REQUEST });
         }
 
-        let query = `SELECT email, phone, firstname, lastname, isadmin, pwd FROM bryllyant.userprofile WHERE email='${req.body.email}'`;
+        let query = `SELECT * FROM bryllyant.userprofile WHERE email='${req.body.email}'`;
 
         PostgresHelper.query(query, (err, response) => {
             logger.debug({ context: { query } }, 'Dumping query');
             if (err) {
                 logger.error({ err: err })
                 return res.status(400).send(err);
-            } else if (response.rowCount && response.rowCount > 0) {
+            } else if (!response.rowCount || response.rowCount === 0) {
+                return res.send(404);
+            } else {
                 // check if the password is correct
                 bcrypt.compare(req.body.pwd, response.rows[0].pwd).then(function (result) {
                     if (!result) {
                         return res.status(403).send({ msg: SERVICE_CONSTANTS.USER.INVALID_CREDENTIALS });
                     } else {
-                        jwt.sign({
+                        let userData = {
                             id: response.rows[0].id,
                             email: response.rows[0].email,
                             phone: response.rows[0].phone,
                             firstname: response.rows[0].firstname,
                             lastname: response.rows[0].lastname,
                             isadmin: response.rows[0].isadmin
-                        }, SERVICE_CONSTANTS.AUTH.APP_SECRET, { expiresIn: SERVICE_CONSTANTS.AUTH.TOKEN_EXPIRES_IN }, (err, token) => {
-                            return res.status(200).json({
-                                token: token
-                            });
+                        }
+                        jwt.sign(userData, SERVICE_CONSTANTS.AUTH.APP_SECRET, { expiresIn: SERVICE_CONSTANTS.AUTH.TOKEN_EXPIRES_IN }, (err, token) => {
+                            userData.token = token;
+                            return res.status(200).json(userData);
                         });
                     }
                 });

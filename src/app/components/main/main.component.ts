@@ -22,6 +22,7 @@ export class MainComponent implements OnInit {
   msgBoxType = 0; // 0 - no message; 1 - success; 2 - info; 3 - warning; 4 - error
   msgBoxMessage = '';
   userIsValid: boolean = true;
+  userInfo;
 
   userid: number;
   firstname: string;
@@ -44,6 +45,11 @@ export class MainComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    // this.userInfo = this.userService.getUserInfo();
+    // if (!this.userInfo) {
+    //   this.userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
+    // }
+
     this.loadUsers();
     this.buildFormComponents();
   }

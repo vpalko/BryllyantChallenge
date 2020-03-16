@@ -28,13 +28,12 @@ class PostgresHelper {
         }
     }
 
-    query(query, data, callback) {
-        if(data) {
-            return this.postgresClient.query(query, data, callback)
-        } else {
-            return this.postgresClient.query(query, callback)
-        }
+    query(query, callback) {
+        return this.postgresClient.query(query, callback)
+    }
 
+    queryData(query, data, callback) {
+        return this.postgresClient.query(query, data, callback)
     }
 }
 

@@ -6,17 +6,22 @@ import { AppComponent } from './app.component';
 import { MainComponent } from './components/main/main.component';
 import { TextMaskModule } from 'angular2-text-mask';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from  '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { Constants } from './shared/constants';
 import { HeaderComponent } from './components/layout/header/header.component';
 import { AboutComponent } from './components/pages/about/about.component';
+import { LoginComponent } from './components/login/login.component';
+import { UserService } from './services/user.service';
+import { AppRoutesGuardService } from './services/app-routes-guard.service';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     MainComponent,
     HeaderComponent,
-    AboutComponent
+    AboutComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -26,7 +31,7 @@ import { AboutComponent } from './components/pages/about/about.component';
     TextMaskModule,
     HttpClientModule
   ],
-  providers: [Constants],
+  providers: [Constants, UserService, AppRoutesGuardService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

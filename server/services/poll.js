@@ -53,7 +53,7 @@ class Poll {
             let query = 'INSERT INTO bryllyant.poll(name, description, authorid) VALUES($1, $2, $3)';
             let data = [name, description, authorid];
 
-            PostgresHelper.query(query, data, (err, response) => {
+            PostgresHelper.queryData(query, data, (err, response) => {
                 logger.debug({ context: { query } }, 'Dumping query');
                 if (err) {
                     logger.error({ err: err })
