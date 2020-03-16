@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
+import { UserService } from '../../services/user.service';
+import { Constants } from '../../shared/constants';
+// import { first } from 'rxjs/operators';
 
 @Component({ templateUrl: 'login.component.html' })
 export class LoginComponent implements OnInit {
@@ -9,21 +11,25 @@ export class LoginComponent implements OnInit {
     loading = false;
     submitted = false;
     returnUrl: string;
+    loginError: boolean = false;
+    msgBoxMessage: string;
 
     constructor(
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private userservice: UserService,
+        private constants: Constants
     ) {
         // redirect to home if already logged in
-        // if (this.authenticationService.currentUserValue) {
-        //     this.router.navigate(['/']);
-        // }
+        if (this.userservice.isLoggedIn()) {
+            this.router.navigate(['/']);
+        }
     }
 
     ngOnInit() {
         this.loginForm = this.formBuilder.group({
-            username: ['', Validators.required],
+            email: ['', Validators.required],             //Validators.pattern(this.constants.EMAIL_PATTERN)
             password: ['', Validators.required]
         });
 
@@ -35,10 +41,8 @@ export class LoginComponent implements OnInit {
     get f() { return this.loginForm.controls; }
 
     onSubmit() {
+        this.loginError = false;
         this.submitted = true;
-
-        // reset alerts on submit
-        // this.alertService.clear();
 
         // stop here if form is invalid
         if (this.loginForm.invalid) {
@@ -46,15 +50,15 @@ export class LoginComponent implements OnInit {
         }
 
         this.loading = true;
-        // this.authenticationService.login(this.f.username.value, this.f.password.value)
-        //     .pipe(first())
-        //     .subscribe(
-        //         data => {
-        //             this.router.navigate([this.returnUrl]);
-        //         },
-        //         error => {
-        //             this.alertService.error(error);
-        //             this.loading = false;
-        //         });
+        this.userservice.login(this.f.email.value, this.f.password.value).subscribe(
+            data => {
+                this.userservice.setUserInfo(data);
+                this.router.navigate(['/']);
+            },
+            err => {
+                this.loading = false;
+                this.loginError = true;
+                this.msgBoxMessage = 'Unable to login';
+            });
     }
 }

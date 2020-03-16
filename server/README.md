@@ -21,6 +21,7 @@ CREATE TABLE bryllyant.userprofile(
 );
 
 INSERT INTO bryllyant.userprofile (email, phone, firstname, lastname, isadmin, pwd) VALUES ('admin@example.com', '9195551234', 'Admin', 'Bryllyant', true, '$2b$10$FLOIG06GwRC91ftk2EZRi.hSCSfFaLEI08.Ohi2YQBjhsAiXfgVWC');
+INSERT INTO bryllyant.userprofile (email, phone, firstname, lastname, isadmin, pwd) VALUES ('john@example.com', '2155551234', 'John', 'Smith', false, '$2b$10$FLOIG06GwRC91ftk2EZRi.hSCSfFaLEI08.Ohi2YQBjhsAiXfgVWC');
 
 CREATE TABLE bryllyant.poll(
    id             SERIAL PRIMARY KEY,

@@ -21,6 +21,8 @@ export class Constants {
   REQRES_API_BASE_URL = 'http://localhost:3456';
   REQRES_API_USER_URL = '/user';
 
+  USER_INFO_SESSION_STORAGE = 'currentuser';
+
   // REQRES_API_BASE_URL = 'https://reqres.in';
   // REQRES_API_USER_URL = '/api/users';
 }

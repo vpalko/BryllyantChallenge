@@ -157,7 +157,7 @@ export class MainComponent implements OnInit {
   }
 
   loadUsers() {
-    this.httpClient.get(this.constants.REQRES_API_BASE_URL + this.constants.REQRES_API_USER_URL).subscribe((res) => {
+    this.httpClient.get(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_USER_URL}`).subscribe((res) => {
 
       if (Object.keys(res).length != 0) {
         for (let i = 0; i < Object.keys(res).length; i++) {
@@ -179,7 +179,7 @@ export class MainComponent implements OnInit {
   }
 
   deleteUser() {
-    this.httpClient.delete(this.constants.REQRES_API_BASE_URL + this.constants.REQRES_API_USER_URL + '/' + this.userid)
+    this.httpClient.delete(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_USER_URL}/${this.userid}`)
       .subscribe(
         data => {
           let userIdx = lodash.findIndex(this.users, {'userid': this.userid});
@@ -205,7 +205,7 @@ export class MainComponent implements OnInit {
   }
 
   createUser() {
-    this.httpClient.post(this.constants.REQRES_API_BASE_URL + this.constants.REQRES_API_USER_URL + '/new',
+    this.httpClient.post(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_USER_URL}/new`,
       {
         "email": this.email,
         "pwd": this.pwd,
@@ -249,7 +249,7 @@ export class MainComponent implements OnInit {
   }
 
   updateUser() {
-    this.httpClient.put(this.constants.REQRES_API_BASE_URL + this.constants.REQRES_API_USER_URL + '/' + this.userid,
+    this.httpClient.put(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_USER_URL}/${this.userid}`,
       {
         "id": this.userid,
         "email": this.email,
