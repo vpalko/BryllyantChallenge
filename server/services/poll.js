@@ -8,15 +8,15 @@ logger.level = 'debug';
 
 class Poll {
     getpoll(req, res){
-        let query;
+        let query = 
+        `SELECT p.*, concat_ws(', ', u.lastname, u.firstname) AS authorname FROM bryllyant.poll as p LEFT OUTER JOIN bryllyant.userprofile as u ON u.id = p.authorid `; //keep white space after each string
+
         if(req.params.id){
-            query = `SELECT * FROM bryllyant.poll WHERE id='${req.params.id}'`;
+            query += `WHERE p.id='${req.params.id}'`;
         } else if(req.params.authorid){
-            query = `SELECT * FROM bryllyant.poll WHERE authorid='${req.params.authorid}'`;
-        } else {
-            query = `SELECT * FROM bryllyant.poll`;
+            query += `WHERE p.authorid='${req.params.authorid}'`;
         }
-        
+    
         PostgresHelper.query(query, (err, response) => {
             logger.debug({ context: { query } }, 'Dumping query');
             if (err) {

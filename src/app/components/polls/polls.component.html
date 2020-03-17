@@ -1,3 +1,92 @@
+<div class="alert alert-success" *ngIf="msgBoxType===1">
+  <strong>Success!</strong> {{msgBoxMessage}}
+</div>
+
+<div class="alert alert-info" *ngIf="msgBoxType===2">
+  <strong>Info!</strong> {{msgBoxMessage}}
+</div>
+
+<div class="alert alert-warning" *ngIf="msgBoxType===3">
+  <strong>Warning!</strong> {{msgBoxMessage}}
+</div>
+
+<div class="alert alert-danger" *ngIf="msgBoxType===4">
+  <strong>Error!</strong> {{msgBoxMessage}}
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <form (ngSubmit)="onAddItem()" [formGroup]="pollForm" #f="ngForm">
+      <div class="row">
+        <div class="col-sm-6 form-group">
+
+        </div>
+        <div class="col-sm-6 form-group">
+          <div style="display: flex; justify-content: flex-end">
+            <button id="btnNew" class="btn btn-primary" type="button" *ngIf="(formState===0 || formState===1)"
+              (click)="newPoll()">New poll</button>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="formState===1 || formState===2 || formState===3">
+        <hr>
+        <div class="row">
+          <div class="col-sm-6 form-group">
+            <label for="pollname">* Poll name</label>
+            <input type="text" id="pollname" class="form-control" formControlName="pollNameControl"
+              [(ngModel)]="pollname">
+            <div
+              *ngIf="(!pollForm.get('pollNameControl').valid && (pollForm.get('pollNameControl').dirty || pollForm.get('pollNameControl').touched))"
+              class="text-danger">
+
+              <div *ngIf="pollForm.get('pollNameControl').hasError('required')">
+                Poll name is required.
+              </div>
+              <div *ngIf="pollForm.get('pollNameControl').hasError('pattern')">
+                Poll name is invalid.
+              </div>
+              <div *ngIf="pollForm.get('pollNameControl').hasError('maxlength')">
+                Poll name must be not more than {{constants.POLL_NAME_MAX_LENGTH}} characters.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-3 form-group">
+            <label for="polldescription">* Description</label>
+            <input type="text" id="polldescription" class="form-control" formControlName="descriptionControl" [(ngModel)]="polldescription">
+            <div
+              *ngIf="(!pollForm.get('descriptionControl').valid && (pollForm.get('descriptionControl').dirty || pollForm.get('descriptionControl').touched))"
+              class="text-danger">
+
+              <div *ngIf="pollForm.get('descriptionControl').hasError('required')">
+                Description is required.
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-sm-12">
+            <button id="btnEdit" class="btn btn-success" type="button" *ngIf="formState===1"
+              (click)="editPoll()">Edit</button>
+            <button id="btnSave" class="btn btn-success" type="button" *ngIf="formState===2 || formState===3"
+              (click)="savePoll()" [disabled]="!pollForm.valid">Save</button>
+            <button id="btnDelete" class="btn btn-danger" type="button" *ngIf="formState===1"
+              (click)="deletePoll()">Delete</button>
+            <button id="btnCancel" class="btn btn-primary" type="button"
+              *ngIf="formState===1 || formState===2 || formState===3"
+              (click)="onClear()">{{formState===2 ? 'Cancel':'Clear'}}</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
 <div class="row" style="margin-top: 50px">
     <div class="col-sm-12">
       <hr>
@@ -8,6 +97,5 @@
 <app-poll-item 
   *ngFor="let poll of polls" 
   [poll]="poll"
-  (deletePoll)="deletePoll($event)"
   >
 </app-poll-item>

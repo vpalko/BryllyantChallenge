@@ -13,6 +13,9 @@ export class Constants {
   LAST_NAME_MAX_LENGTH = 40;
   FIRST_NAME_MIN_LENGTH = 2;
   LAST_NAME_MIN_LENGTH = 2;
+  POLL_NAME_MAX_LENGTH = 40;
+  POLL_NAME_MIN_LENGTH = 5;
+  POLL_DESCRIPTION_NAME_MAX_LENGTH = 225;
   PHONE_MIN_LENGTH = 13; // (ddd) ddd-dddd
 
   PHONE_MASK = ['(', /\d/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
@@ -20,6 +23,7 @@ export class Constants {
 
   REQRES_API_BASE_URL = 'http://localhost:3456';
   REQRES_API_USER_URL = '/user';
+  REQRES_API_POLL_URL = '/poll';
 
   USER_INFO_SESSION_STORAGE = 'currentuser';
 

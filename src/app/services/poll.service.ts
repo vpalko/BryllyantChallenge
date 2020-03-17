@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Constants } from '../shared/constants';
 
 import { Poll } from '../models/Poll';
 
@@ -14,10 +15,9 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class PollService {
-  pollsUrl:string = 'https://jsonplaceholder.typicode.com/todos';
-  pollsLimit = '?_limit=5';
+  pollsUrl:string = `${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_POLL_URL}`;
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient, private constants: Constants,) { }
 
   // Get Polls
   getPolls():Observable<Poll[]> {

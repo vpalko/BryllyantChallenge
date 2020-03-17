@@ -6,7 +6,7 @@ import { User } from './services/user.model';
 import * as moment from 'moment';
 import * as lodash from 'lodash';
 
-@Component({
+@Component({ 
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css']
@@ -54,7 +54,7 @@ export class MainComponent implements OnInit {
     this.buildFormComponents();
   }
 
-  countryForm: FormGroup;
+  // countryForm: FormGroup;
 
   buildFormComponents() {
     this.userForm = this.formBuilder.group({

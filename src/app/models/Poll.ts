@@ -1,5 +1,7 @@
 export class Poll {
     id:number;
-    title:string;
-    completed:boolean;
+    name:string;
+    description: string;
+    authorid: number;
+    authorname: string;
   }
