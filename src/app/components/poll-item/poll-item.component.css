@@ -1,0 +1,59 @@
+.del {
+    background: #ff0000;
+    color: #fff;
+    border: none;
+    padding: 5px 9px;
+    border-radius: 50%;
+    cursor: pointer;
+    float: right;
+  }
+  
+/*============================================*/
+
+.btn {
+  margin-right: 5px;
+}
+
+.btn.disabled, .btn:disabled {
+  cursor: no-drop;
+}
+
+input.ng-invalid.ng-touched
+{
+  color: #850000;
+  background: rgba(254, 186, 186, 0.5);
+  border: 1px solid #850000;
+}
+
+.pollInfo{
+  font-size: small;
+  color: grey;
+  margin-top: 0px;
+  margin-bottom: 1px;
+}
+
+.pollInfoAdmin{
+  color: red;
+  margin-top: 0px;
+  margin-bottom: 1px;
+  margin-left: 20px;
+}
+
+.pollInfoHeader{
+  font-weight: bold;
+  margin-top: 0px;
+  margin-bottom: 1px;
+}
+
+.pollInfoDiv:hover{
+  border-top-style: solid;
+  border-left-style: solid;
+  border-color: lightgrey;
+  border-width: thin;
+
+  -moz-box-shadow: 5px 5px 5px #ccc;
+  -webkit-box-shadow: 5px 5px 5px #ccc;
+  box-shadow: 5px 5px 5px #ccc;
+
+  cursor: pointer;
+}

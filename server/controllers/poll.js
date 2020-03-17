@@ -11,6 +11,10 @@ router.post('/new', auth.verifyToken, auth.isAdmin, (req, res) => {
     poll.newpoll(req, res);
 })
 
+router.get('/', auth.verifyToken, (req, res) => {
+    poll.getpoll(req, res);
+})
+
 router.get('/:id', auth.verifyToken, (req, res) => {
     poll.getpoll(req, res);
 })

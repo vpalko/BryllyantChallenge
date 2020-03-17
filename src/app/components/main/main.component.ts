@@ -104,6 +104,7 @@ export class MainComponent implements OnInit {
   }
 
   onClear() {
+    this.showMessageBox(0, '');
     this.gbForm.reset();
     this.formState = 0;
     this.enableFormControls();
@@ -179,7 +180,10 @@ export class MainComponent implements OnInit {
   }
 
   deleteUser() {
-    this.httpClient.delete(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_USER_URL}/${this.userid}`)
+    if (this.userid === 1){
+      this.showMessageBox(3, 'You cannot delete root Administrator account');
+    } else {
+      this.httpClient.delete(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_USER_URL}/${this.userid}`)
       .subscribe(
         data => {
           let userIdx = lodash.findIndex(this.users, {'userid': this.userid});
@@ -194,6 +198,7 @@ export class MainComponent implements OnInit {
           this.showMessageBox(4, 'Unable to delete the user');
         }
       );
+    }
   }
 
   saveUser(){

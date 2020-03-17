@@ -31,13 +31,6 @@ class Auth {
                 return res.status(404).end();
             } else {
                 return res.status(200).send(response.rows);
-
-                // return res.status(200).send({ 
-                //     id: response.rows[0].id,
-                //     name: response.rows[0].name,
-                //     description: response.rows[0].description,
-                //     authorid: response.rows[0].authorid 
-                // });
             }
         });
   
