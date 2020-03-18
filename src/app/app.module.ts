@@ -15,6 +15,7 @@ import { UserService } from './services/user.service';
 import { AppRoutesGuardService } from './services/app-routes-guard.service';
 import { PollsComponent } from './components/polls/polls.component';
 import { PollItemComponent } from './components/poll-item/poll-item.component';
+import { AddPollComponent } from './components/add-poll/add-poll.component';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { PollItemComponent } from './components/poll-item/poll-item.component';
     AboutComponent,
     LoginComponent,
     PollsComponent,
-    PollItemComponent
+    PollItemComponent,
+    AddPollComponent
   ],
   imports: [
     BrowserModule,

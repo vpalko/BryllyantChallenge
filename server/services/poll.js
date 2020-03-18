@@ -7,16 +7,16 @@ var logger = log4js.getLogger();
 logger.level = 'debug';
 
 class Poll {
-    getpoll(req, res){
-        let query = 
-        `SELECT p.*, concat_ws(', ', u.lastname, u.firstname) AS authorname FROM bryllyant.poll as p LEFT OUTER JOIN bryllyant.userprofile as u ON u.id = p.authorid `; //keep white space after each string
+    getpoll(req, res) {
+        let query =
+            `SELECT p.*, concat_ws(', ', u.lastname, u.firstname) AS authorname FROM bryllyant.poll as p LEFT OUTER JOIN bryllyant.userprofile as u ON u.id = p.authorid `; //keep white space after each string
 
-        if(req.params.id){
+        if (req.params.id) {
             query += `WHERE p.id='${req.params.id}'`;
-        } else if(req.params.authorid){
+        } else if (req.params.authorid) {
             query += `WHERE p.authorid='${req.params.authorid}'`;
         }
-    
+
         PostgresHelper.query(query, (err, response) => {
             logger.debug({ context: { query } }, 'Dumping query');
             if (err) {
@@ -24,7 +24,7 @@ class Poll {
                 // if (err.code && err.code === POSTGRES_ERRORS.FOREIGN_KEY_VIOLATION) {
                 //     return res.status(400).send({ error: SERVICE_CONSTANTS.POLL.INVALIDAUTHORID });
                 // } else {
-                    return res.status(400).send(err);
+                return res.status(400).send(err);
                 // }
             } else if (!response.rowCount || response.rowCount === 0) {
                 return res.status(404).end();
@@ -34,32 +34,84 @@ class Poll {
         });
     }
 
-    newpoll(req, res) {
-            //get credentials coming in from form
-            var name = req.body.name;
-            var description = req.body.description ? req.body.description : '';
-            var authorid = req.body.authorid;
-
-            if(!name || !authorid) {
-                return res.status(400).send({ msg: SERVICE_CONSTANTS.BAD_REQUEST });
-            }
-
-            let query = 'INSERT INTO bryllyant.poll(name, description, authorid) VALUES($1, $2, $3)';
-            let data = [name, description, authorid];
-
-            PostgresHelper.queryData(query, data, (err, response) => {
+    getauthorpoll(authorid) {
+        return new Promise((resolve, reject) => {
+            let query = `SELECT p.*, concat_ws(', ', u.lastname, u.firstname) AS authorname FROM bryllyant.poll as p LEFT OUTER JOIN bryllyant.userprofile as u ON u.id = p.authorid WHERE authorid='${authorid}' ORDER BY id DESC`;
+            
+            PostgresHelper.query(query, (err, response) => {
                 logger.debug({ context: { query } }, 'Dumping query');
                 if (err) {
                     logger.error({ err: err })
-                    if (err.code && err.code === POSTGRES_ERRORS.FOREIGN_KEY_VIOLATION) {
-                        return res.status(400).send({ error: SERVICE_CONSTANTS.POLL.INVALIDAUTHORID });
-                    } else {
-                        return res.status(400).send(err);
-                    }
+                    reject();
+                } else if (!response.rowCount || response.rowCount === 0) {
+                    reject();
                 } else {
-                    return res.status(200).send({ msg: SERVICE_CONSTANTS.POLL.CREATED });
+                    resolve(response.rows);
                 }
             });
+        });
+    }
+
+    deletepoll(req, res) {
+        var id = req.params.id;
+
+        if (!id) {
+            return res.status(400).send({ msg: SERVICE_CONSTANTS.BAD_REQUEST });
+        }
+
+        let query = `DELETE FROM bryllyant.poll WHERE id=${id}`;
+
+        PostgresHelper.query(query, (err, response) => {
+            logger.debug({ context: { query } }, 'Dumping query');
+            if (err) {
+                logger.error({ err: err })
+                return res.status(400).send(err);
+            } else {
+                // logger.debug(response.rows[0]);
+                return res.status(200).send({ msg: SERVICE_CONSTANTS.POLL.DELETED });
+            }
+        });
+    }
+
+    newpoll(req, res) {
+        //get credentials coming in from form
+        var name = req.body.name;
+        var description = req.body.description ? req.body.description : '';
+        var authorid = req.body.authorid;
+
+        if (!name || !authorid) {
+            return res.status(400).send({ msg: SERVICE_CONSTANTS.BAD_REQUEST });
+        }
+
+        let query = 'INSERT INTO bryllyant.poll(name, description, authorid) VALUES($1, $2, $3)';
+        let data = [name, description, authorid];
+
+        PostgresHelper.queryData(query, data, (err, response) => {
+            logger.debug({ context: { query } }, 'Dumping query');
+            if (err) {
+                logger.error({ err: err })
+                if (err.code && err.code === POSTGRES_ERRORS.FOREIGN_KEY_VIOLATION) {
+                    return res.status(400).send({ error: SERVICE_CONSTANTS.POLL.INVALIDAUTHORID });
+                } else {
+                    return res.status(400).send(err);
+                }
+            } else {
+                this.getauthorpoll(authorid)
+                    .then(data => {
+                        return res.status(200).send({ 
+                            id: data[0].id,
+                            name:data[0].name,
+                            description: data[0].description,
+                            authorid: data[0].authorid,
+                            authorname: data[0].authorname
+                         });
+                    })
+                    .catch(() => {
+                        return res.status(500).end();
+                        }
+                    )
+            }
+        });
 
 
 
@@ -74,7 +126,7 @@ class Poll {
 
         // let users = [['test@example.com', 'Fred'], ['test2@example.com', 'Lynda']];
         // let query1 = format('INSERT INTO users (email, name) VALUES %L returning id', users);
-        
+
         // async function run() {
         //   let client;
         //   try {

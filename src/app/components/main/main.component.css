@@ -33,6 +33,10 @@ input.ng-invalid.ng-touched
     margin-bottom: 1px;
 }
 
+.userInfoDiv {
+    padding-bottom: 10px;
+}
+
 .userInfoDiv:hover{
     border-top-style: solid;
     border-left-style: solid;

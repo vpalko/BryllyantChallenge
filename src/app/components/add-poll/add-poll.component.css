@@ -1,0 +1,12 @@
+input, textarea {
+    width: 100%;
+    display: block;
+}
+
+.form {
+    padding-bottom: 20px;
+}
+
+.form input[type='submit'] {
+    width: 100px;
+}

@@ -15,29 +15,28 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class PollService {
-  pollsUrl:string = `${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_POLL_URL}`;
+  pollsUrl: string = `${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_POLL_URL}`;
 
-  constructor(private http:HttpClient, private constants: Constants,) { }
+  constructor(private httpClient: HttpClient, private constants: Constants) { }
 
   // Get Polls
-  getPolls():Observable<Poll[]> {
-    return this.http.get<Poll[]>(`${this.pollsUrl}`);
+  getPolls(): Observable<Poll[]> {
+    return this.httpClient.get<Poll[]>(`${this.pollsUrl}`);
   }
 
   // Delete Poll
-  deletePoll(poll:Poll):Observable<Poll> {
-    const url = `${this.pollsUrl}/${poll.id}`;
-    return this.http.delete<Poll>(url, httpOptions);
+  deletePoll(id) {
+    return this.httpClient.delete(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_POLL_URL}/${id}`, httpOptions);
   }
 
   // Add Poll
-  addPoll(poll:Poll):Observable<Poll> {
-    return this.http.post<Poll>(this.pollsUrl, poll, httpOptions);
+  addPoll(poll: Poll): Observable<Poll> {
+    return this.httpClient.post<Poll>(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_POLL_URL}/new`, poll, httpOptions);
   }
 
   // Toggle Completed
-  toggleCompleted(poll: Poll):Observable<any> {
+  toggleCompleted(poll: Poll): Observable<any> {
     const url = `${this.pollsUrl}/${poll.id}`;
-    return this.http.put(url, poll, httpOptions);
+    return this.httpClient.put(url, poll, httpOptions);
   }
 }

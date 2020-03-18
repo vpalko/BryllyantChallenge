@@ -22,6 +22,8 @@ module.exports = {
     },
     POLL: {
         CREATED: "Poll successfully created",
+        UPDATED: "Poll successfully updated",
+        DELETED: "Poll successfully deleted",
         INVALID: "Invalid poll id",
         INVALIDAUTHORID: "Invalid author id"
     }

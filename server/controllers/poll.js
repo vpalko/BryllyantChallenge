@@ -19,6 +19,10 @@ router.get('/:id', auth.verifyToken, (req, res) => {
     poll.getpoll(req, res);
 })
 
+router.delete('/:id', auth.verifyToken, auth.isAdmin, (req, res) => {
+    poll.deletepoll(req, res);
+});
+
 router.get('/author/:authorid', auth.verifyToken, (req, res) => {
     poll.getpoll(req, res);
 })
