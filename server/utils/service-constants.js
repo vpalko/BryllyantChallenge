@@ -26,6 +26,12 @@ module.exports = {
         DELETED: "Poll successfully deleted",
         INVALID: "Invalid poll id",
         INVALIDAUTHORID: "Invalid author id"
+    },
+    QUESTION: {
+        CREATED: "Question successfully created",
+        UPDATED: "Question successfully updated",
+        DELETED: "Question successfully deleted",
+        INVALID: "Invalid question id"
     }
   }
   

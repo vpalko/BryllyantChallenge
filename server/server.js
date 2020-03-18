@@ -8,6 +8,7 @@ const cors = require('cors');
 
 const authController = require('./controllers/auth');
 const pollController = require('./controllers/poll');
+const questionController = require('./controllers/question');
 const PostgresHelper = require('./utils/postgres-helper');
 const ProcessListener = require('./utils/process-event-listener');
 
@@ -34,6 +35,7 @@ app.use(cors({
 
 app.use('/user', authController);
 app.use('/poll', pollController);
+app.use('/question', questionController);
 
 var port = 3456;
 app.listen(port, function(){

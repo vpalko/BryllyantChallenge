@@ -16,7 +16,8 @@ import { AppRoutesGuardService } from './services/app-routes-guard.service';
 import { PollsComponent } from './components/polls/polls.component';
 import { PollItemComponent } from './components/poll-item/poll-item.component';
 import { AddPollComponent } from './components/add-poll/add-poll.component';
-
+import { QuestionsComponent } from './components/questions/questions.component';
+import { PollQuestionsComponent } from './components/poll-questions/poll-questions.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,9 @@ import { AddPollComponent } from './components/add-poll/add-poll.component';
     LoginComponent,
     PollsComponent,
     PollItemComponent,
-    AddPollComponent
+    AddPollComponent,
+    QuestionsComponent,
+    PollQuestionsComponent
   ],
   imports: [
     BrowserModule,

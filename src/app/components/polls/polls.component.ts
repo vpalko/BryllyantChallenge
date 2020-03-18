@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core'; 
 import { Constants } from '../../shared/constants';
 import { PollService } from '../../services/poll.service';
-
+import { Router } from '@angular/router';
 import { Poll } from '../../models/Poll';
 
 @Component({
@@ -12,12 +12,16 @@ import { Poll } from '../../models/Poll';
 export class PollsComponent implements OnInit {
   polls:Poll[];
 
-  constructor(private pollService:PollService, private constants: Constants) { }
+  constructor(private pollService:PollService, private constants: Constants, private router: Router) { }
 
   ngOnInit() {
     this.pollService.getPolls().subscribe(polls => {
       this.polls = polls;
     });
+  }
+
+  navigateQuestions(poll:Poll){
+    this.router.navigateByUrl(`/pollquestions/${poll.id}`);
   }
 
   deletePoll(poll:Poll) {

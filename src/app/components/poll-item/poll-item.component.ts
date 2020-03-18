@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { PollService } from '../../services/poll.service';
-
 import { Poll } from 'src/app/models/Poll';
 
 @Component({
@@ -11,13 +10,18 @@ import { Poll } from 'src/app/models/Poll';
 export class PollItemComponent implements OnInit {
   @Input() poll: Poll;
   @Output() deletePoll: EventEmitter<Poll> = new EventEmitter();
+  @Output() navigateQuestions: EventEmitter<Poll> = new EventEmitter();
 
   constructor(private pollService: PollService) { }
 
-  ngOnInit() {
+  ngOnInit() { 
   }
 
   onDelete(poll) {
     this.deletePoll.emit(poll);
+  }
+
+  onPollClick(poll){
+    this.navigateQuestions.emit(poll);
   }
 }

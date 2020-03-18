@@ -1,0 +1,13 @@
+<div class="row" style="margin-top: 50px">
+    <div class="col-sm-12">
+        <hr>
+        <h2>Questions for poll# {{pollid}}</h2>
+    </div>
+</div>
+
+<!-- <app-poll-questions (addQuestion)="addQuestion($event)"></app-poll-questions> -->
+<app-poll-questions 
+*ngFor="let question of questions" 
+[question]="question" 
+(deleteQuestion)="deleteQuestion($event)">
+</app-poll-questions>

@@ -4,14 +4,17 @@
       <button class="btn btn-sm btn-danger btn-circle" (click)="onDelete(poll)"><i class="fa fa-times"></i></button>
     </div>
 
-    <div>
-      <p class="pollInfoHeader" style="padding-left: 65px;">{{poll.name}}
-      </p>
-    </div>
+    <div (click)="onPollClick(poll)">
+      <div>
+        <p class="pollInfoHeader" style="padding-left: 65px;">{{poll.name}}
+        </p>
+      </div>
 
-    <div style="padding-left: 85px;">
-      <p class="pollInfo">author: {{poll.authorname}}</p>
-      <p class="pollInfo">description: {{poll.description}}</p>
+      <div style="padding-left: 85px;">
+        <p class="pollInfo">author: {{poll.authorname}}</p>
+        <p class="pollInfo">description: {{poll.description}}</p>
+      </div>
     </div>
   </div>
-</div>
+</div> 
+ 

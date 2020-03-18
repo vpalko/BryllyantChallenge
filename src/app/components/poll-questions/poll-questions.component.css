@@ -1,0 +1,94 @@
+.itemInline {
+    float:left;
+    padding-left: 50%;
+    padding: 0px 0px 0px 16px !important;
+    border: none;
+    vertical-align: middle;
+    height: 48px;
+    line-height: 48px;
+  }
+  
+  .btn-circle, .btn-circle-3d{
+    border-radius: 50% !important;
+  }
+  
+  .btn-primary.btn-circle{
+    -webkit-box-shadow: 0px 0px 3px 1px #245580;
+    -moz-box-shadow:    0px 0px 3px 1px #245580;
+    box-shadow:         0px 0px 3px 1px #245580;
+  }
+  
+  .btn-info.btn-circle{
+    -webkit-box-shadow: 0px 0px 3px 1px #28a4c9;
+    -moz-box-shadow:    0px 0px 3px 1px #28a4c9;
+    box-shadow:         0px 0px 3px 1px #28a4c9;
+  }
+  
+  .btn-success.btn-circle{
+    -webkit-box-shadow: 0px 0px 3px 1px #3e8f3e;
+    -moz-box-shadow:    0px 0px 3px 1px #3e8f3e;
+    box-shadow:         0px 0px 3px 1px #3e8f3e;
+  }
+  
+  .btn-danger.btn-circle{
+    -webkit-box-shadow: 0px 0px 3px 1px #b92c28;
+    -moz-box-shadow:    0px 0px 3px 1px #b92c28;
+    box-shadow:         0px 0px 3px 1px #b92c28;
+  }
+  
+  .btn-warning.btn-circle{
+    -webkit-box-shadow: 0px 0px 3px 1px #e38d13;
+    -moz-box-shadow:    0px 0px 3px 1px #e38d13;
+    box-shadow:         0px 0px 3px 1px #e38d13;
+  }
+  
+  .btn-default.btn-circle{
+    -webkit-box-shadow: 0px 0px 3px 1px #ccc;
+    -moz-box-shadow:    0px 0px 3px 1px #ccc;
+    box-shadow:         0px 0px 3px 1px #ccc;
+  }
+  
+  
+  input.ng-invalid.ng-touched
+  {
+    color: #850000;
+    background: rgba(254, 186, 186, 0.5);
+    border: 1px solid #850000;
+  }
+  
+  .questionInfo{
+    font-size: small;
+    color: grey;
+    margin-top: 0px;
+    margin-bottom: 1px;
+  }
+  
+  .questionInfoAdmin{
+    color: red;
+    margin-top: 0px;
+    margin-bottom: 1px;
+    margin-left: 20px;
+  }
+  
+  .questionInfoHeader{
+    font-weight: bold;
+    margin-top: 0px;
+    margin-bottom: 1px;
+  }
+  
+  .questionInfoDiv {
+    padding-bottom: 10px;
+  }
+  
+  .questionInfoDiv:hover{
+    border-top-style: solid;
+    border-left-style: solid;
+    border-color: lightgrey;
+    border-width: thin;
+  
+    -moz-box-shadow: 5px 5px 5px #ccc;
+    -webkit-box-shadow: 5px 5px 5px #ccc;
+    box-shadow: 5px 5px 5px #ccc;
+  
+    cursor: pointer;
+  }

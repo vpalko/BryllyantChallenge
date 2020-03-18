@@ -1,14 +1,14 @@
 <div class="row" style="margin-top: 50px">
-    <div class="col-sm-12">
-      <hr>
-      <h2>Polls</h2>
-    </div>
+  <div class="col-sm-12">
+    <hr>
+    <h2>Polls</h2>
   </div>
+</div>
 
 <app-add-poll (addPoll)="addPoll($event)"></app-add-poll>
 <app-poll-item 
   *ngFor="let poll of polls" 
-  [poll]="poll"
+  [poll]="poll" 
   (deletePoll)="deletePoll($event)"
-  >
+  (navigateQuestions)="navigateQuestions($event)">
 </app-poll-item>

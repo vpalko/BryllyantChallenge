@@ -4,13 +4,15 @@ import { MainComponent } from './components/main/main.component';
 import { AboutComponent } from './components/pages/about/about.component';
 import { LoginComponent } from './components/login/login.component';
 import { PollsComponent } from './components/polls/polls.component';
+import { QuestionsComponent } from './components/questions/questions.component';
 import { AppRoutesGuardService } from './services/app-routes-guard.service';
 
 const routes: Routes = [
   { path: '', component: MainComponent, canActivate: [AppRoutesGuardService] },
   { path: 'about', component: AboutComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'polls', component: PollsComponent, canActivate: [AppRoutesGuardService] }
+  { path: 'polls', component: PollsComponent, canActivate: [AppRoutesGuardService] },
+  { path: 'pollquestions/:id', component: QuestionsComponent, canActivate: [AppRoutesGuardService] }
 ];
 
 @NgModule({

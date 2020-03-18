@@ -33,10 +33,4 @@ export class PollService {
   addPoll(poll: Poll): Observable<Poll> {
     return this.httpClient.post<Poll>(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_POLL_URL}/new`, poll, httpOptions);
   }
-
-  // Toggle Completed
-  toggleCompleted(poll: Poll): Observable<any> {
-    const url = `${this.pollsUrl}/${poll.id}`;
-    return this.httpClient.put(url, poll, httpOptions);
-  }
 }
