@@ -1,7 +1,15 @@
 <div class="row pollInfoDiv">
   <div class="col-sm-9">
     <div class="itemInline">
-      <button class="btn btn-sm btn-danger btn-circle" (click)="onDelete(poll)"><i class="fa fa-times"></i></button>
+      <button 
+        title="Delete poll" 
+        class="btn btn-sm btn-danger btn-circle" 
+        (click)="onDelete(poll)"><i class="fa fa-times"></i></button>
+      <button 
+        title="Send poll invitation" 
+        class="btn btn-primary" 
+        (click)="onSendInvitation(poll)"><i class="fa fa-calendar-check-o"></i></button>
+
     </div>
 
     <div (click)="onPollClick(poll)">

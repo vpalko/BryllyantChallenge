@@ -23,11 +23,11 @@ export class QuestionsComponent implements OnInit {
     });
   }
 
-  deleteQuestion(question: Question) {
+  deletPolleQuestion(question: Question) {
     // Remove From UI
     this.questions = this.questions.filter(t => t.id !== question.id);
     // Remove from server
-    this.questionService.deleteQuestion(question.id).subscribe(
+    this.questionService.deletPolleQuestion(question.id).subscribe(
       data => {
         console.log("question deleted");
       },
@@ -57,8 +57,9 @@ export class QuestionsComponent implements OnInit {
 
   }
 
-  addQuestion(question: Question) {
-    this.questionService.addQuestion(question).subscribe(res => {
+  addPollQuestion(question: Question) {
+    question.pollid = this.pollid;
+    this.questionService.addPollQuestion(question).subscribe(res => {
       let newQuestion = {
         id: res['id'],
         pollid: res['pollid'],

@@ -18,6 +18,7 @@ import { PollItemComponent } from './components/poll-item/poll-item.component';
 import { AddPollComponent } from './components/add-poll/add-poll.component';
 import { QuestionsComponent } from './components/questions/questions.component';
 import { PollQuestionsComponent } from './components/poll-questions/poll-questions.component';
+import { AddPollQuestionComponent } from './components/add-poll-question/add-poll-question.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { PollQuestionsComponent } from './components/poll-questions/poll-questio
     PollItemComponent,
     AddPollComponent,
     QuestionsComponent,
-    PollQuestionsComponent
+    PollQuestionsComponent,
+    AddPollQuestionComponent
   ],
   imports: [
     BrowserModule,

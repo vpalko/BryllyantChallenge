@@ -25,12 +25,12 @@ export class QuestionService {
   }
 
   // Delete Question
-  deleteQuestion(id) {
+  deletPolleQuestion(id) {
     return this.httpClient.delete(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_QUESTION_URL}/${id}`, httpOptions);
   }
 
   // Add Question
-  addQuestion(question: Question): Observable<Question> {
+  addPollQuestion(question: Question): Observable<Question> {
     return this.httpClient.post<Question>(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_QUESTION_URL}/new`, question, httpOptions);
   }
 }

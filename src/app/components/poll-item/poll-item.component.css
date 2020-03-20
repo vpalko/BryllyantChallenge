@@ -8,6 +8,10 @@
   line-height: 48px;
 }
 
+.btn {
+  margin-right: 10px;
+}
+
 .btn-circle, .btn-circle-3d{
   border-radius: 50% !important;
 }

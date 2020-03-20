@@ -5,9 +5,10 @@
     </div>
 </div>
 
-<!-- <app-poll-questions (addQuestion)="addQuestion($event)"></app-poll-questions> -->
+
+<app-add-poll-question (addPollQuestion)="addPollQuestion($event)"></app-add-poll-question>
 <app-poll-questions 
 *ngFor="let question of questions" 
 [question]="question" 
-(deleteQuestion)="deleteQuestion($event)">
+(deletPolleQuestion)="deletPolleQuestion($event)">
 </app-poll-questions>

@@ -74,16 +74,14 @@ class Question {
     }
 
     newquestion(req, res) {
-        //get credentials coming in from form
-        var name = req.body.name;
-        var description = req.body.description ? req.body.description : '';
-        var authorid = req.body.authorid;
+        var question = req.body.question;
+        var pollid = req.body.pollid;
 
         if (!pollid || !question) {
             return res.status(400).send({ msg: SERVICE_CONSTANTS.BAD_REQUEST });
         }
 
-        let query = 'INSERT INTO bryllyant.question(pollid, question) VALUES($1, $2)';
+        let query = 'INSERT INTO bryllyant.questions(pollid, question) VALUES($1, $2)';
         let data = [pollid, question];
 
         PostgresHelper.queryData(query, data, (err, response) => {
@@ -96,7 +94,7 @@ class Question {
                     .then(data => {
                         return res.status(200).send({ 
                             id: data[0].id,
-                            question:data[0].questoin,
+                            question:data[0].question,
                             pollid: data[0].pollid
                          });
                     })
