@@ -10,7 +10,7 @@
   *ngFor="let poll of polls" 
   [poll]="poll" 
   (deletePoll)="deletePoll($event)"
-  (sendInvitation)="openModal(mymodal, $event)"
+  (openModal)="openModal(mymodal, $event)"
   (navigateQuestions)="navigateQuestions($event)">
 </app-poll-item>
 
@@ -30,13 +30,13 @@
 
         <div *ngFor="let user of users; let i = index">
           <label>
-            <input type="checkbox" [checked]="true" [value]="user.email" (change)="onCheckboxChange($event)" />
+            <input type="checkbox" [checked]="user.checked" [value]="user.email" (change)="onCheckboxChange(i, $event)" />
             {{user.lastname}}, {{user.firstname}}
           </label>
         </div>
       </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Send</button>
+        <button type="button" class="btn btn-primary" [disabled]="!isUserSelected" (click)="modal.close('Send click')">Send</button>
     </div>
 </ng-template>

@@ -1,5 +1,5 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-import { UserService } from '../../services/user.service';
+import { Component, OnInit, EventEmitter, Output, ViewChild } from '@angular/core';
+import { NgForm, FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-add-poll-question',
@@ -7,12 +7,12 @@ import { UserService } from '../../services/user.service';
   styleUrls: ['./add-poll-question.component.css']
 })
 export class AddPollQuestionComponent implements OnInit {
-
+  @ViewChild('f') gbForm: NgForm;
   @Output() addPollQuestion: EventEmitter<any> = new EventEmitter();
 
   title: string;
 
-  constructor(private userservice: UserService) { }
+  constructor() { }
 
   ngOnInit() {
   }
@@ -23,6 +23,7 @@ export class AddPollQuestionComponent implements OnInit {
     }
 
     this.addPollQuestion.emit(question);
+    this.gbForm.reset();
   }
 
 }

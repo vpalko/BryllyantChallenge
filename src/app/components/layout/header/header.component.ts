@@ -8,13 +8,13 @@ import { UserService } from '../../../services/user.service';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(private userservice: UserService) { }
+  constructor(private userService: UserService) { }
 
   ngOnInit(): void {
   }
 
   logOut(){
-    this.userservice.logout();
+    this.userService.logout();
   }
 
 }

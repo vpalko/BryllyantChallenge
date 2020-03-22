@@ -18,11 +18,11 @@ export class LoginComponent implements OnInit {
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router,
-        private userservice: UserService,
+        private userService: UserService,
         private constants: Constants
     ) {
         // redirect to home if already logged in
-        if (this.userservice.isLoggedIn()) {
+        if (this.userService.isLoggedIn()) {
             this.router.navigate(['/']);
         }
     }
@@ -50,9 +50,9 @@ export class LoginComponent implements OnInit {
         }
 
         this.loading = true;
-        this.userservice.login(this.f.email.value, this.f.password.value).subscribe(
+        this.userService.login(this.f.email.value, this.f.password.value).subscribe(
             data => {
-                this.userservice.setUserInfo(data);
+                this.userService.setUserInfo(data);
                 this.router.navigate(['/']);
             },
             err => {

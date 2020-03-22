@@ -20,7 +20,7 @@ class Question {
         PostgresHelper.query(query, (err, response) => {
             logger.debug({ context: { query } }, 'Dumping query');
             if (err) {
-                logger.error({ err: err })
+                logger.error({ err })
                 // if (err.code && err.code === POSTGRES_ERRORS.FOREIGN_KEY_VIOLATION) {
                 //     return res.status(400).send({ error: SERVICE_CONSTANTS.POLL.INVALIDAUTHORID });
                 // } else {
@@ -41,7 +41,7 @@ class Question {
             PostgresHelper.query(query, (err, response) => {
                 logger.debug({ context: { query } }, 'Dumping query');
                 if (err) {
-                    logger.error({ err: err })
+                    logger.error({ err })
                     reject();
                 } else if (!response.rowCount || response.rowCount === 0) {
                     reject();
@@ -64,7 +64,7 @@ class Question {
         PostgresHelper.query(query, (err, response) => {
             logger.debug({ context: { query } }, 'Dumping query');
             if (err) {
-                logger.error({ err: err })
+                logger.error({ err })
                 return res.status(400).send(err);
             } else {
                 // logger.debug(response.rows[0]);
@@ -87,7 +87,7 @@ class Question {
         PostgresHelper.queryData(query, data, (err, response) => {
             logger.debug({ context: { query } }, 'Dumping query');
             if (err) {
-                logger.error({ err: err })
+                logger.error({ err })
                 return res.status(400).send(err);
             } else {
                 this.getpollquestions(pollid)

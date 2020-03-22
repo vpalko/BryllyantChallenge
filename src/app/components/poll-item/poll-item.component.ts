@@ -11,7 +11,7 @@ export class PollItemComponent implements OnInit {
   @Input() poll: Poll;
   @Output() deletePoll: EventEmitter<Poll> = new EventEmitter();
   @Output() navigateQuestions: EventEmitter<Poll> = new EventEmitter();
-  @Output() sendInvitation: EventEmitter<Poll> = new EventEmitter();
+  @Output() openModal: EventEmitter<Poll> = new EventEmitter();
 
   constructor(private pollService: PollService) { }
 
@@ -26,7 +26,7 @@ export class PollItemComponent implements OnInit {
     this.navigateQuestions.emit(poll);
   }
 
-  onSendInvitation(poll){
-    this.sendInvitation.emit(poll);
+  onOpenInvitationDialog(poll){
+    this.openModal.emit(poll);
   }
 }

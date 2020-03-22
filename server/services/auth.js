@@ -1,6 +1,7 @@
 const PostgresHelper = require('../utils/postgres-helper');
 const POSTGRES_ERRORS = require('pg-error-constants');
 const SERVICE_CONSTANTS = require('../utils/service-constants');
+const { v1: uuidv1 } = require('uuid');
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -21,7 +22,7 @@ class Auth {
         PostgresHelper.query(query, (err, response) => {
             logger.debug({ context: { query } }, 'Dumping query');
             if (err) {
-                logger.error({ err: err })
+                logger.error({ err })
                 // if (err.code && err.code === POSTGRES_ERRORS.FOREIGN_KEY_VIOLATION) {
                 //     return res.status(400).send({ error: SERVICE_CONSTANTS.POLL.INVALIDAUTHORID });
                 // } else {
@@ -61,7 +62,7 @@ class Auth {
         PostgresHelper.query(query, (err, response) => {
             logger.debug({ context: { query } }, 'Dumping query');
             if (err) {
-                logger.error({ err: err })
+                logger.error({ err })
                 return res.status(400).send(err);
             } else {
                 // logger.debug(response.rows[0]);
@@ -83,7 +84,7 @@ class Auth {
         PostgresHelper.query(query, (err, response) => {
             logger.debug({ context: { query } }, 'Dumping query');
             if (err) {
-                logger.error({ err: err })
+                logger.error({  })
                 return res.status(400).send(err);
             } else {
                 // logger.debug(response.rows[0]);
@@ -94,6 +95,7 @@ class Auth {
 
     addUser(req, res) {
         //get credentials coming in from form
+        var id = uuidv1();
         var email = req.body.email;
         var firstname = req.body.firstname;
         var lastname = req.body.lastname;
@@ -112,13 +114,13 @@ class Auth {
             }
 
             bcrypt.hash(pwd, salt, function (err, hash) {
-                let query = 'INSERT INTO bryllyant.userprofile(email, phone, firstname, lastname, pwd, isadmin) VALUES($1, $2, $3, $4, $5, $6)';
-                let data = [email, phone, firstname, lastname, hash, isadmin];
+                let query = 'INSERT INTO bryllyant.userprofile(id, email, phone, firstname, lastname, pwd, isadmin) VALUES($1, $2, $3, $4, $5, $6, $7)';
+                let data = [id, email, phone, firstname, lastname, hash, isadmin];
 
                 PostgresHelper.queryData(query, data, (err, response) => {
                     logger.debug({ context: { query } }, 'Dumping query');
                     if (err) {
-                        logger.error({ err: err })
+                        logger.error({  })
                         if (err.code && err.code === POSTGRES_ERRORS.UNIQUE_VIOLATION) {
                             return res.status(400).send({ error: SERVICE_CONSTANTS.USER.EMAIL_ALREADY_EXISTS });
                         } else {

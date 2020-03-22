@@ -11,7 +11,7 @@ import { UserService } from './user.service';
   providedIn: 'root'
 })
 export class AppRoutesGuardService implements CanActivate {
-  constructor(private router: Router, private userservice: UserService ) {}
+  constructor(private router: Router, private userService: UserService ) {}
 
   canActivate(
     next: ActivatedRouteSnapshot, 
@@ -20,7 +20,7 @@ export class AppRoutesGuardService implements CanActivate {
     console.log("next", next);
     console.log("state", state);
 
-    if(this.userservice.isLoggedIn()){
+    if(this.userService.isLoggedIn()){
       return true;
     } else {
       // this.router.navigateByUrl('/notauthorized');

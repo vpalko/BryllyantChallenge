@@ -45,11 +45,6 @@ export class MainComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // this.userInfo = this.userService.getUserInfo();
-    // if (!this.userInfo) {
-    //   this.userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
-    // }
-
     this.loadUsers();
     this.buildFormComponents();
   }

@@ -4,7 +4,9 @@ import { PollService } from '../../services/poll.service';
 import { Router } from '@angular/router';
 import { Poll } from '../../models/Poll';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { UserService } from '../../services/user.service';
+import * as lodash from 'lodash';
 
 @Component({
   selector: 'app-polls',
@@ -15,15 +17,17 @@ export class PollsComponent implements OnInit {
   polls: Poll[];
   title = 'appBootstrap';
   closeResult: string;
-  users;
+  users = [];
   usersLoaded: boolean = false;
+  isUserSelected: boolean = true;
 
   constructor(
-    private pollService: PollService, 
-    private constants: Constants, 
+    private pollService: PollService,
+    private constants: Constants,
     private router: Router,
     private httpClient: HttpClient,
-    private modalService: NgbModal) { }
+    private modalService: NgbModal,
+    private userService: UserService) { }
 
   ngOnInit() {
     this.pollService.getPolls().subscribe(polls => {
@@ -35,9 +39,6 @@ export class PollsComponent implements OnInit {
     this.router.navigateByUrl(`/pollquestions/${poll.id}`);
   }
 
-  sendInvitation(poll: Poll){
-    // this.showModalComponent.showDialog();
-  }
 
   deletePoll(poll: Poll) {
     // Remove From UI
@@ -50,27 +51,6 @@ export class PollsComponent implements OnInit {
       error => {
         console.log("undable to delete poll");
       });
-
-
-    /*
-    
-          .subscribe(
-            data => {
-              let userIdx = lodash.findIndex(this.users, {'userid': this.userid});
-              if(userIdx!=-1){
-                this.users.splice(userIdx, 1);
-              }
-    
-              this.onClear();
-              this.showMessageBox(1, 'User deleted successfully');
-            },
-            error => {
-              this.showMessageBox(4, 'Unable to delete the user');
-            }
-          );
-    */
-
-
   }
 
   addPoll(poll: Poll) {
@@ -94,12 +74,43 @@ export class PollsComponent implements OnInit {
   openModal(content, poll: Poll) {
     this.loadUsers();
 
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
       console.log(`Closed with: ${result}`);
 
       //send emails....
-      
+      if (result === "Send click") {
+        let pollRequest = {
+          pollid: poll.id,
+          requestorid: this.userService.getUserInfo().id,
+          userid: lodash.chain(this.users)
+            .filter(usr => usr.checked)
+            .map(function(object) {
+              return object.id;
+          })
+          .value()
+        }
+
+
+        console.log('sending emails for poll ' + JSON.stringify(pollRequest));
+
+        this.pollService.sendInvitation(pollRequest).subscribe(res => {
+          // let newPoll = {
+          //   id: res['id'],
+          //   name: res['name'],
+          //   description: res['description'],
+          //   authorid: res['authorid'],
+          //   authorname: res['authorname']
+          // }
+    
+          // if (!this.polls) {
+          //   this.polls = [newPoll];
+          // } else {
+          //   this.polls.push(newPoll);
+          // }
+        });
+      }
+
 
 
     }, (reason) => {
@@ -107,7 +118,7 @@ export class PollsComponent implements OnInit {
       console.log(`Dismissed ${this.getDismissReason(reason)}`);
     });
   }
-  
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       console.log('by pressing ESC');
@@ -117,32 +128,32 @@ export class PollsComponent implements OnInit {
       return 'by clicking on a backdrop';
     } else {
       console.log(`with: ${reason}`);
-      return  `with: ${reason}`;
+      return `with: ${reason}`;
     }
   }
 
   loadUsers() {
+    if (this.users.length != 0) return;
+
     this.usersLoaded = false;
     this.httpClient.get(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_USER_URL}`).subscribe((res) => {
 
+      // this.users = res;
       if (Object.keys(res).length != 0) {
-        this.users = res;
-        // for (let i = 0; i < Object.keys(res).length; i++) {
-        //   this.users.push(new User(
-        //     res[i].id, 
-        //     res[i].email,
-        //     res[i].firstname, 
-        //     res[i].lastname,
-        //     res[i].phone,
-        //     res[i].pwd,
-        //     res[i].isadmin
-        //     ));
-        // }
+        for (let i = 0; i < Object.keys(res).length; i++) {
+          res[i].checked = true;
+          this.users.push(res[i]);
+        }
       }
       this.usersLoaded = true;
     },
       (error) => {
         this.usersLoaded = true;
       });
+  }
+
+  onCheckboxChange(id, event) {
+    this.users[id].checked = !this.users[id].checked;
+    this.isUserSelected = lodash.some(this.users, { "checked": true }); //enable Send button if at least one user selected
   }
 }
