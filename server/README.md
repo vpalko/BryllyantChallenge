@@ -64,10 +64,11 @@ INSERT INTO bryllyant.questions (pollid, question) VALUES (1, 'question two');
 INSERT INTO bryllyant.questions (pollid, question) VALUES (2, 'Are you OK?');
 
 CREATE TABLE bryllyant.answers(
-   id             SERIAL PRIMARY KEY,
    pollid         INTEGER NOT NULL REFERENCES bryllyant.poll (id),
+   requestid      INTEGER NOT NULL REFERENCES bryllyant.pollrequests (id),
    questionid     INTEGER NOT NULL REFERENCES bryllyant.questions (id),
    userid         INTEGER NOT NULL REFERENCES bryllyant.userprofile (id),
-   answer         BOOLEAN NOT NULL
+   answer         BOOLEAN NOT NULL,
+   PRIMARY KEY    (pollid, requestid, userid, questionid)
 );
 ```
