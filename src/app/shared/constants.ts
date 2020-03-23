@@ -16,8 +16,9 @@ export class Constants {
   POLL_NAME_MAX_LENGTH = 40;
   POLL_NAME_MIN_LENGTH = 5;
   POLL_DESCRIPTION_NAME_MAX_LENGTH = 225;
+  PASSWORD_MIN_LENGTH = 6;
   PHONE_MIN_LENGTH = 13; // (ddd) ddd-dddd
-
+  
   PHONE_MASK = ['(', /\d/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
   DATE_MASK = [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
 

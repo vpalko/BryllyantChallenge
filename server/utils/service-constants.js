@@ -18,7 +18,8 @@ module.exports = {
         UPDATED: "User successfully updated",
         DELETED: "User successfully deleted",
         INVALID: "Invalid user",
-        INVALID_CREDENTIALS: "Unable to login. Either email or password is incorrect"
+        INVALID_CREDENTIALS: "Unable to login. Either email or password is incorrect",
+        UNABLE_TO_FIND: "Unable to find user"
     },
     POLL: {
         CREATED: "Poll successfully created",

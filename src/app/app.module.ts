@@ -20,6 +20,7 @@ import { QuestionsComponent } from './components/questions/questions.component';
 import { PollQuestionsComponent } from './components/poll-questions/poll-questions.component';
 import { AddPollQuestionComponent } from './components/add-poll-question/add-poll-question.component';
 import { VoteComponent } from './components/vote/vote.component';
+import { AppPasswordDirective } from './shared/app-password.directive';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { VoteComponent } from './components/vote/vote.component';
     QuestionsComponent,
     PollQuestionsComponent,
     AddPollQuestionComponent,
-    VoteComponent
+    VoteComponent,
+    AppPasswordDirective
   ],
   imports: [
     BrowserModule,
@@ -44,6 +46,7 @@ import { VoteComponent } from './components/vote/vote.component';
     TextMaskModule,
     HttpClientModule
   ],
+  exports:   [ AppPasswordDirective ],
   providers: [Constants, UserService, AppRoutesGuardService],
   bootstrap: [AppComponent]
 })

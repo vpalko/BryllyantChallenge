@@ -118,15 +118,27 @@ class Auth {
                 PostgresHelper.queryData(query, data, (err, response) => {
                     logger.debug({ context: { query } }, 'Dumping query');
                     if (err) {
-                        logger.error({})
+                        logger.error( { err, data } );
                         if (err.code && err.code === POSTGRES_ERRORS.UNIQUE_VIOLATION) {
                             return res.status(400).send({ error: SERVICE_CONSTANTS.USER.EMAIL_ALREADY_EXISTS });
                         } else {
                             return res.status(400).send(err);
                         }
                     } else {
-                        // logger.debug(response.rows[0]);
-                        return res.status(200).send({ msg: SERVICE_CONSTANTS.USER.CREATED });
+
+                        query = `SELECT id, email, firstname, lastname, phone, isadmin  FROM bryllyant.userprofile WHERE email='${email}'`;
+            
+                        PostgresHelper.query(query, (err, response) => {
+                            logger.debug({ context: { query } }, 'Dumping query');
+                            if (err) {
+                                logger.error({ err })
+                                return res.status(400).send({ error: SERVICE_CONSTANTS.USER.UNABLE_TO_FIND });
+                            } else if (!response.rowCount || response.rowCount === 0) {
+                                return res.status(400).send({ error: SERVICE_CONSTANTS.USER.UNABLE_TO_FIND });
+                            } else {
+                                return res.status(200).send({ msg: SERVICE_CONSTANTS.USER.CREATED, user: response.rows[0] });
+                            }
+                        });
                     }
                 });
             });

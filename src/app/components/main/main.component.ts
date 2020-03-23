@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgForm, FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
+import { NgForm, FormControl, Validators, FormGroup, FormBuilder, ValidatorFn } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Constants } from '../../shared/constants';
-import { User } from './services/user.model';
+import { User } from '../../models/User';
 import * as moment from 'moment';
 import * as lodash from 'lodash';
 
-@Component({ 
+@Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css']
@@ -30,12 +30,14 @@ export class MainComponent implements OnInit {
   address: string;
   phone: number;
   email: string;
-  pwd: string;
+  password: string;
+  confirmpassword: string;
   isadmin: boolean;
+  errorPasswordMinLenght;
 
   isAdminOptions = [
-    {value: true, label: 'Yes'},
-    {value: false, label: 'No'}
+    { value: true, label: 'Yes' },
+    { value: false, label: 'No' }
   ];
 
   constructor(
@@ -45,6 +47,8 @@ export class MainComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.errorPasswordMinLenght = this.constants.PASSWORD_MIN_LENGTH;
+
     this.loadUsers();
     this.buildFormComponents();
   }
@@ -77,11 +81,45 @@ export class MainComponent implements OnInit {
         Validators.pattern(this.constants.EMAIL_PATTERN),
         // this.dateValidator
       ]],
+      passwordControl: [{ value: '', disabled: true }, 
+      [
+        Validators.required,
+        Validators.minLength(this.constants.PASSWORD_MIN_LENGTH),
+        // Validators.pattern(this.constants.EMAIL_PATTERN),
+        // this.dateValidator
+      ]],
+      confirmPasswordControl: [{ value: '', disabled: true },
+      [
+        Validators.required
+      ]],
       isAdminControl: [{ value: '', disabled: true },
       [
         Validators.required
       ]]
-    });
+    },
+      { validator: this.equalValueValidator('passwordControl', 'confirmPasswordControl') }
+    );
+  }
+
+  equalValueValidator(targetKey: string, toMatchKey: string): ValidatorFn {
+    return (group: FormGroup): { [key: string]: any } => {
+      const target = group.controls[targetKey];
+      const toMatch = group.controls[toMatchKey];
+      if ((target.touched && toMatch.touched) || (target.value && toMatch.value)) {
+        const isMatch = target.value === toMatch.value;
+        // set equal value error on dirty controls
+        if (!isMatch && target.valid && toMatch.valid) {
+          toMatch.setErrors({ equalValue: targetKey });
+          const message = targetKey + ' != ' + toMatchKey;
+          return { 'equalValue': message };
+        }
+        if (isMatch && toMatch.hasError('equalValue')) {
+          toMatch.setErrors(null);
+        }
+      }
+
+      return null;
+    };
   }
 
   dateValidator(control: FormControl) {
@@ -101,6 +139,25 @@ export class MainComponent implements OnInit {
   onClear() {
     this.showMessageBox(0, '');
     this.gbForm.reset();
+
+    this.userid = undefined;
+    this.firstname = '';
+    this.lastname = '';
+    this.address = '';
+    this.phone = undefined;
+    this.email = '';
+    this.password = '';
+    this.confirmpassword = '';
+    this.isadmin = false;
+
+    this.userForm.controls['firstNameControl'].setValue('');
+    this.userForm.controls['lastNameControl'].setValue('');
+    this.userForm.controls['phoneControl'].setValue('');
+    this.userForm.controls['emailControl'].setValue('');
+    this.userForm.controls['passwordControl'].setValue('');
+    this.userForm.controls['confirmPasswordControl'].setValue('');
+    this.userForm.controls['isAdminControl'].setValue(false);
+
     this.formState = 0;
     this.enableFormControls();
   }
@@ -112,6 +169,8 @@ export class MainComponent implements OnInit {
       this.userForm.controls['lastNameControl'].disable();
       this.userForm.controls['phoneControl'].disable();
       this.userForm.controls['emailControl'].disable();
+      this.userForm.controls['passwordControl'].disable();
+      this.userForm.controls['confirmPasswordControl'].disable();
       this.userForm.controls['isAdminControl'].disable();
 
     } else if (this.formState === 2 || this.formState === 3) {//edit or new
@@ -120,6 +179,11 @@ export class MainComponent implements OnInit {
       this.userForm.controls['phoneControl'].enable();
       this.userForm.controls['emailControl'].enable();
       this.userForm.controls['isAdminControl'].enable();
+
+      if (this.formState === 3) { //new
+        this.userForm.controls['passwordControl'].enable();
+        this.userForm.controls['confirmPasswordControl'].enable();
+      }
     }
   }
 
@@ -139,16 +203,15 @@ export class MainComponent implements OnInit {
     this.enableFormControls();
   }
 
-  loadUser(id){
+  loadUser(id) {
     this.showMessageBox(0, '');
     this.formState = 1;
-    
+
     this.userid = this.users[id].userid;
     this.email = this.users[id].email;
     this.firstname = this.users[id].firstname;
     this.lastname = this.users[id].lastname;
     this.phone = this.users[id].phone;
-    this.pwd = this.users[id].pwd;
     this.isadmin = this.users[id].isadmin;
   }
 
@@ -158,14 +221,13 @@ export class MainComponent implements OnInit {
       if (Object.keys(res).length != 0) {
         for (let i = 0; i < Object.keys(res).length; i++) {
           this.users.push(new User(
-            res[i].id, 
+            res[i].id,
             res[i].email,
-            res[i].firstname, 
+            res[i].firstname,
             res[i].lastname,
             res[i].phone,
-            res[i].pwd,
             res[i].isadmin
-            ));
+          ));
         }
       }
     },
@@ -175,31 +237,31 @@ export class MainComponent implements OnInit {
   }
 
   deleteUser() {
-    if (this.userid === 1){
+    if (this.userid === 1) {
       this.showMessageBox(3, 'You cannot delete root Administrator account');
     } else {
       this.httpClient.delete(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_USER_URL}/${this.userid}`)
-      .subscribe(
-        data => {
-          let userIdx = lodash.findIndex(this.users, {'userid': this.userid});
-          if(userIdx!=-1){
-            this.users.splice(userIdx, 1);
-          }
+        .subscribe(
+          data => {
+            let userIdx = lodash.findIndex(this.users, { 'userid': this.userid });
+            if (userIdx != -1) {
+              this.users.splice(userIdx, 1);
+            }
 
-          this.onClear();
-          this.showMessageBox(1, 'User deleted successfully');
-        },
-        error => {
-          this.showMessageBox(4, 'Unable to delete the user');
-        }
-      );
+            this.onClear();
+            this.showMessageBox(1, 'User deleted successfully');
+          },
+          error => {
+            this.showMessageBox(4, 'Unable to delete the user');
+          }
+        );
     }
   }
 
-  saveUser(){
-    if(this.formState===2){//edit user
+  saveUser() {
+    if (this.formState === 2) {//edit user
       this.updateUser();
-    } else if(this.formState===3){//new user
+    } else if (this.formState === 3) {//new user
       this.createUser();
     }
   }
@@ -208,31 +270,29 @@ export class MainComponent implements OnInit {
     this.httpClient.post(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_USER_URL}/new`,
       {
         "email": this.email,
-        "pwd": this.pwd,
-        "phone": this.phone,
+        "phone": this.unmask(this.phone),
         "firstname": this.firstname,
         "lastname": this.lastname,
+        "pwd": this.password,
         "isadmin": this.isadmin
       })
       .subscribe(
         res => {
           this.users.push(new User(
-            res['id'], 
-            res['email'],
-            res['pwd'],
-            res['phone'],
-            res['firstname'], 
-            res['lastname'],
-            res['isadmin']
-            ));
+            res['user']['id'],
+            res['user']['email'],
+            res['user']['phone'],
+            res['user']['firstname'],
+            res['user']['lastname'],
+            res['user']['isadmin']
+          ));
 
-            this.userid = res['id'];
-            this.email = res['email'];
-            this.pwd = res['pwd'];
-            this.phone = res['phone'];
-            this.firstname = res['firstname'];
-            this.lastname = res['lastname'];
-            this.isadmin = res['isadmin'];
+          this.userid = res['user']['id'];
+          this.email = res['user']['email'];
+          this.phone = res['user']['phone'];
+          this.firstname = res['user']['firstname'];
+          this.lastname = res['user']['lastname'];
+          this.isadmin = res['user']['isadmin'];
 
           this.formState = 1;
           this.enableFormControls();
@@ -245,7 +305,7 @@ export class MainComponent implements OnInit {
   }
 
   unmask(val) {
-    return val.replace(/[- )(]/g,'');
+    return val.replace(/[- )(]/g, '');
   }
 
   updateUser() {
@@ -253,7 +313,6 @@ export class MainComponent implements OnInit {
       {
         "id": this.userid,
         "email": this.email,
-        "pwd": this.pwd,
         "phone": this.unmask(this.phone),
         "firstname": this.firstname,
         "lastname": this.lastname,
@@ -261,10 +320,9 @@ export class MainComponent implements OnInit {
       })
       .subscribe(
         data => {
-          let userIdx = lodash.findIndex(this.users, {'userid': this.userid});
-          if(userIdx!=-1){
+          let userIdx = lodash.findIndex(this.users, { 'userid': this.userid });
+          if (userIdx != -1) {
             this.users[userIdx].email = this.email;
-            this.users[userIdx].pwd = this.pwd;
             this.users[userIdx].phone = this.phone;
             this.users[userIdx].firstname = this.firstname;
             this.users[userIdx].lastname = this.lastname;

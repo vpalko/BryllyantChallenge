@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../services/user.service';
-import { Constants } from '../../shared/constants';
-// import { first } from 'rxjs/operators';
 
 @Component({ templateUrl: 'login.component.html' })
 export class LoginComponent implements OnInit {
@@ -18,8 +16,7 @@ export class LoginComponent implements OnInit {
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router,
-        private userService: UserService,
-        private constants: Constants
+        private userService: UserService
     ) {
         // redirect to home if already logged in
         if (this.userService.isLoggedIn()) {
@@ -29,8 +26,8 @@ export class LoginComponent implements OnInit {
 
     ngOnInit() {
         this.loginForm = this.formBuilder.group({
-            email: ['', Validators.required],             //Validators.pattern(this.constants.EMAIL_PATTERN)
-            password: ['', Validators.required]
+            loginemail: ['', Validators.required],             //Validators.pattern(this.constants.EMAIL_PATTERN)
+            loginpassword: ['', Validators.required]
         });
 
         // get return url from route parameters or default to '/'
@@ -50,7 +47,7 @@ export class LoginComponent implements OnInit {
         }
 
         this.loading = true;
-        this.userService.login(this.f.email.value, this.f.password.value).subscribe(
+        this.userService.login(this.f.loginemail.value, this.f.loginpassword.value).subscribe(
             data => {
                 this.userService.setUserInfo(data);
                 this.router.navigate(['/']);

@@ -8,19 +8,19 @@
             <h2>Login</h2>
             <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
                 <div class="form-group">
-                    <label for="email">User email</label>
-                    <input type="text" formControlName="email" class="form-control"
-                        [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
-                    <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
-                        <div *ngIf="f.email.errors.required">Email is required</div>
+                    <label for="loginemail">User email</label>
+                    <input type="text" formControlName="loginemail" class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && f.loginemail.errors }" />
+                    <div *ngIf="submitted && f.loginemail.errors" class="invalid-feedback">
+                        <div *ngIf="f.loginemail.errors.required">Email is required</div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" formControlName="password" class="form-control"
-                        [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
-                    <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-                        <div *ngIf="f.password.errors.required">Password is required</div>
+                    <label for="loginpassword">Password</label>
+                    <input type="password" formControlName="loginpassword" class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && f.loginpassword.errors }" />
+                    <div *ngIf="submitted && f.loginpassword.errors" class="invalid-feedback">
+                        <div *ngIf="f.loginpassword.errors.required">Password is required</div>
                     </div>
                 </div>
                 <div class="form-group">
