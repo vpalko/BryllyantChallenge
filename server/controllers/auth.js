@@ -14,6 +14,10 @@ router.post('/login', (req, res) => {
     auth.login(req, res);
 });
 
+router.get('/login/:token', (req, res) => {
+    auth.login(req, res);
+});
+
 router.put('/:id', auth.verifyToken, auth.isAdmin, (req, res) => {
     auth.updateuser(req, res);
 });

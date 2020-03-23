@@ -36,7 +36,7 @@ class Question {
 
     getpollquestions(pollid) {
         return new Promise((resolve, reject) => {
-            let query = `SELECT * FROM bryllyant.questions WHERE pollid='${pollid}' ORDER BY id DESC`;
+            let query = `SELECT * FROM bryllyant.questions WHERE pollid='${pollid}' ORDER BY id DESC FETCH FIRST 1 ROW ONLY`;
             
             PostgresHelper.query(query, (err, response) => {
                 logger.debug({ context: { query } }, 'Dumping query');
@@ -98,7 +98,8 @@ class Question {
                             pollid: data[0].pollid
                          });
                     })
-                    .catch(() => {
+                    .catch((err) => {
+                        logger.error({ err });
                         return res.status(500).end();
                         }
                     )

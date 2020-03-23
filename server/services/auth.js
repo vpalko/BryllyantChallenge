@@ -1,7 +1,6 @@
 const PostgresHelper = require('../utils/postgres-helper');
 const POSTGRES_ERRORS = require('pg-error-constants');
 const SERVICE_CONSTANTS = require('../utils/service-constants');
-const { v1: uuidv1 } = require('uuid');
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -11,14 +10,14 @@ const logger = log4js.getLogger();
 logger.level = 'debug';
 
 class Auth {
-    getuser(req, res){
+    getuser(req, res) {
         let query;
-        if(req.params.id){
+        if (req.params.id) {
             query = `SELECT id, email, firstname, lastname, phone, isadmin  FROM bryllyant.userprofile WHERE id='${req.params.id}'`;
         } else {
             query = `SELECT * FROM bryllyant.userprofile`;
         }
-        
+
         PostgresHelper.query(query, (err, response) => {
             logger.debug({ context: { query } }, 'Dumping query');
             if (err) {
@@ -26,7 +25,7 @@ class Auth {
                 // if (err.code && err.code === POSTGRES_ERRORS.FOREIGN_KEY_VIOLATION) {
                 //     return res.status(400).send({ error: SERVICE_CONSTANTS.POLL.INVALIDAUTHORID });
                 // } else {
-                    return res.status(400).send(err);
+                return res.status(400).send(err);
                 // }
             } else if (!response.rowCount || response.rowCount === 0) {
                 return res.status(404).end();
@@ -34,7 +33,7 @@ class Auth {
                 return res.status(200).send(response.rows);
             }
         });
-  
+
     }
 
     updateuser(req, res) {
@@ -46,7 +45,7 @@ class Auth {
         var phone = req.body.phone;
         var isadmin = req.body.isadmin;
 
-        if(!id || (!email && !phone && !firstname && !lastname && isadmin === undefined)) {
+        if (!id || (!email && !phone && !firstname && !lastname && isadmin === undefined)) {
             return res.status(400).send({ msg: SERVICE_CONSTANTS.BAD_REQUEST });
         }
 
@@ -75,7 +74,7 @@ class Auth {
         //get credentials coming in from form
         var id = req.params.id;
 
-        if(!id) {
+        if (!id) {
             return res.status(400).send({ msg: SERVICE_CONSTANTS.BAD_REQUEST });
         }
 
@@ -84,7 +83,7 @@ class Auth {
         PostgresHelper.query(query, (err, response) => {
             logger.debug({ context: { query } }, 'Dumping query');
             if (err) {
-                logger.error({  })
+                logger.error({})
                 return res.status(400).send(err);
             } else {
                 // logger.debug(response.rows[0]);
@@ -95,7 +94,6 @@ class Auth {
 
     addUser(req, res) {
         //get credentials coming in from form
-        var id = uuidv1();
         var email = req.body.email;
         var firstname = req.body.firstname;
         var lastname = req.body.lastname;
@@ -103,7 +101,7 @@ class Auth {
         var pwd = req.body.pwd;
         var isadmin = req.body.isadmin;
 
-        if(!email || !phone || !firstname || !lastname || !pwd || isadmin === undefined) {
+        if (!email || !phone || !firstname || !lastname || !pwd || isadmin === undefined) {
             return res.status(400).send({ msg: SERVICE_CONSTANTS.BAD_REQUEST });
         }
 
@@ -114,13 +112,13 @@ class Auth {
             }
 
             bcrypt.hash(pwd, salt, function (err, hash) {
-                let query = 'INSERT INTO bryllyant.userprofile(id, email, phone, firstname, lastname, pwd, isadmin) VALUES($1, $2, $3, $4, $5, $6, $7)';
-                let data = [id, email, phone, firstname, lastname, hash, isadmin];
+                let query = 'INSERT INTO bryllyant.userprofile(email, phone, firstname, lastname, pwd, isadmin) VALUES($1, $2, $3, $4, $5, $6)';
+                let data = [email, phone, firstname, lastname, hash, isadmin];
 
                 PostgresHelper.queryData(query, data, (err, response) => {
                     logger.debug({ context: { query } }, 'Dumping query');
                     if (err) {
-                        logger.error({  })
+                        logger.error({})
                         if (err.code && err.code === POSTGRES_ERRORS.UNIQUE_VIOLATION) {
                             return res.status(400).send({ error: SERVICE_CONSTANTS.USER.EMAIL_ALREADY_EXISTS });
                         } else {
@@ -136,48 +134,64 @@ class Auth {
     }
 
     login(req, res) {
-        if (!req.body.email || !req.body.pwd) {
+        if ((!req.body.email || !req.body.pwd) && !req.params.token) {
             return res.status(400).send({ msg: SERVICE_CONSTANTS.BAD_REQUEST });
         }
 
-        let query = `SELECT * FROM bryllyant.userprofile WHERE email='${req.body.email}'`;
+        if (req.body.email) {
+            let query = `SELECT * FROM bryllyant.userprofile WHERE email='${req.body.email}'`;
 
-        PostgresHelper.query(query, (err, response) => {
-            logger.debug({ context: { query } }, 'Dumping query');
-            if (err) {
-                logger.error({ err: err })
-                return res.status(400).send(err);
-            } else if (!response.rowCount || response.rowCount === 0) {
-                return res.send(404);
-            } else {
-                // check if the password is correct
-                bcrypt.compare(req.body.pwd, response.rows[0].pwd).then(function (result) {
-                    if (!result) {
-                        return res.status(403).send({ msg: SERVICE_CONSTANTS.USER.INVALID_CREDENTIALS });
-                    } else {
-                        let userData = {
-                            id: response.rows[0].id,
-                            email: response.rows[0].email,
-                            phone: response.rows[0].phone,
-                            firstname: response.rows[0].firstname,
-                            lastname: response.rows[0].lastname,
-                            isadmin: response.rows[0].isadmin
+            PostgresHelper.query(query, (err, response) => {
+                logger.debug({ context: { query } }, 'Dumping query');
+                if (err) {
+                    logger.error({ err: err })
+                    return res.status(400).send(err);
+                } else if (!response.rowCount || response.rowCount === 0) {
+                    return res.send(404);
+                } else {
+                    // check if the password is correct
+                    bcrypt.compare(req.body.pwd, response.rows[0].pwd).then(function (result) {
+                        if (!result) {
+                            return res.status(403).send({ msg: SERVICE_CONSTANTS.USER.INVALID_CREDENTIALS });
+                        } else {
+                            let userData = {
+                                id: response.rows[0].id,
+                                email: response.rows[0].email,
+                                phone: response.rows[0].phone,
+                                firstname: response.rows[0].firstname,
+                                lastname: response.rows[0].lastname,
+                                isadmin: response.rows[0].isadmin
+                            }
+                            jwt.sign(userData, SERVICE_CONSTANTS.AUTH.APP_SECRET, { expiresIn: SERVICE_CONSTANTS.AUTH.TOKEN_EXPIRES_IN }, (err, token) => {
+                                userData.token = token;
+                                return res.status(200).json(userData);
+                            });
                         }
-                        jwt.sign(userData, SERVICE_CONSTANTS.AUTH.APP_SECRET, { expiresIn: SERVICE_CONSTANTS.AUTH.TOKEN_EXPIRES_IN }, (err, token) => {
-                            userData.token = token;
-                            return res.status(200).json(userData);
-                        });
-                    }
-                });
-            }
-        });
+                    });
+                }
+            });
+        } else if (req.params.token) {
+            jwt.verify(req.params.token, SERVICE_CONSTANTS.AUTH.APP_SECRET, (err, authdata) => {
+                if (err) {
+                    res.sendStatus(403);
+                } else {
+                    delete authdata.iat;
+
+                    //sign token that expires
+                    jwt.sign(authdata, SERVICE_CONSTANTS.AUTH.APP_SECRET, { expiresIn: SERVICE_CONSTANTS.AUTH.TOKEN_EXPIRES_IN }, (err, token) => {
+                        authdata.token = token;
+                        return res.status(200).json(authdata);
+                    });
+                }
+            });
+        }
     }
 
     isAdmin(req, res, next) {
         if (SERVICE_CONSTANTS.NODE_ENV === "test") {
             return next();
         }
-        
+
         if (req.isadmin && req.isadmin === true) {
             next();
         } else {

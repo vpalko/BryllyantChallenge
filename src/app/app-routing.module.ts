@@ -6,13 +6,15 @@ import { LoginComponent } from './components/login/login.component';
 import { PollsComponent } from './components/polls/polls.component';
 import { QuestionsComponent } from './components/questions/questions.component';
 import { AppRoutesGuardService } from './services/app-routes-guard.service';
+import { VoteComponent } from './components/vote/vote.component';
 
 const routes: Routes = [
   { path: '', component: MainComponent, canActivate: [AppRoutesGuardService] },
   { path: 'about', component: AboutComponent },
   { path: 'login', component: LoginComponent },
   { path: 'polls', component: PollsComponent, canActivate: [AppRoutesGuardService] },
-  { path: 'pollquestions/:id', component: QuestionsComponent, canActivate: [AppRoutesGuardService] }
+  { path: 'pollquestions/:id', component: QuestionsComponent, canActivate: [AppRoutesGuardService] },
+  { path: 'vote/:id', component: VoteComponent }
 ];
 
 @NgModule({

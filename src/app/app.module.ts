@@ -19,6 +19,7 @@ import { AddPollComponent } from './components/add-poll/add-poll.component';
 import { QuestionsComponent } from './components/questions/questions.component';
 import { PollQuestionsComponent } from './components/poll-questions/poll-questions.component';
 import { AddPollQuestionComponent } from './components/add-poll-question/add-poll-question.component';
+import { VoteComponent } from './components/vote/vote.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { AddPollQuestionComponent } from './components/add-poll-question/add-pol
     AddPollComponent,
     QuestionsComponent,
     PollQuestionsComponent,
-    AddPollQuestionComponent
+    AddPollQuestionComponent,
+    VoteComponent
   ],
   imports: [
     BrowserModule,

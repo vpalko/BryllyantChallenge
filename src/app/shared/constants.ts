@@ -25,9 +25,7 @@ export class Constants {
   REQRES_API_USER_URL = '/user';
   REQRES_API_POLL_URL = '/poll';
   REQRES_API_QUESTION_URL = '/question';
+  REQRES_API_VOTE_URL = '/vote';
 
   USER_INFO_SESSION_STORAGE = 'currentuser';
-
-  // REQRES_API_BASE_URL = 'https://reqres.in';
-  // REQRES_API_USER_URL = '/api/users';
 }

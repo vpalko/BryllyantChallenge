@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core'; 
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Constants } from '../../shared/constants';
 import { QuestionService } from '../../services/question.service';
-import { Router } from '@angular/router';
 import { Question } from '../../models/Question';
 
 @Component({
@@ -14,7 +13,10 @@ export class QuestionsComponent implements OnInit {
   questions: Question[];
   pollid;
 
-  constructor(private questionService: QuestionService, private constants: Constants, private router: Router, private activeRoute: ActivatedRoute) { }
+  constructor(
+    private questionService: QuestionService,
+    private constants: Constants,
+    private activeRoute: ActivatedRoute) { }
 
   ngOnInit() {
     this.pollid = this.activeRoute.snapshot.params.id;
@@ -34,27 +36,6 @@ export class QuestionsComponent implements OnInit {
       error => {
         console.log("undable to delete question");
       });
-
-
-    /*
-    
-          .subscribe(
-            data => {
-              let userIdx = lodash.findIndex(this.users, {'userid': this.userid});
-              if(userIdx!=-1){
-                this.users.splice(userIdx, 1);
-              }
-    
-              this.onClear();
-              this.showMessageBox(1, 'User deleted successfully');
-            },
-            error => {
-              this.showMessageBox(4, 'Unable to delete the user');
-            }
-          );
-    */
-
-
   }
 
   addPollQuestion(question: Question) {

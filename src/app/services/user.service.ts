@@ -60,4 +60,8 @@ export class UserService {
     login(email, pwd) {
         return this.httpClient.post(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_USER_URL}/login`, { email, pwd });
     }
+
+    logintoken(token) {
+        return this.httpClient.get(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_USER_URL}/login/${token}`);
+    }
 }

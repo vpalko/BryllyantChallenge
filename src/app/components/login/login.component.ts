@@ -8,8 +8,8 @@ import { Constants } from '../../shared/constants';
 @Component({ templateUrl: 'login.component.html' })
 export class LoginComponent implements OnInit {
     loginForm: FormGroup;
-    loading = false;
-    submitted = false;
+    loading: boolean = false;
+    submitted: boolean = false;
     returnUrl: string;
     loginError: boolean = false;
     msgBoxMessage: string;

@@ -1,0 +1,29 @@
+<div class="alert alert-success" style="word-wrap: break-word;" *ngIf="msgBoxType===1">
+    <strong>Success!</strong> {{msgBoxMessage}}
+</div>
+
+<div class="alert alert-info" style="word-wrap: break-word;" *ngIf="msgBoxType===2">
+    <strong>Info!</strong> {{msgBoxMessage}}
+</div>
+
+<div class="alert alert-warning" style="word-wrap: break-word;" *ngIf="msgBoxType===3">
+    <strong>Warning!</strong> {{msgBoxMessage}}
+</div>
+
+<div class="alert alert-danger" style="word-wrap: break-word;" *ngIf="msgBoxType===4">
+    <strong>Error!</strong> {{msgBoxMessage}}
+</div>
+
+<div *ngIf="loading">
+    <span  class="spinner-border spinner-border-sm mr-1"></span>
+    Loading poll questions...
+</div>
+
+
+<app-vote-item 
+  *ngFor="let poll of polls" 
+  [poll]="poll" 
+  (deletePoll)="deletePoll($event)"
+  (openModal)="openModal(mymodal, $event)"
+  (navigateQuestions)="navigateQuestions($event)">
+</app-vote-item>

@@ -20,6 +20,8 @@ export class PollsComponent implements OnInit {
   users = [];
   usersLoaded: boolean = false;
   isUserSelected: boolean = true;
+  msgBoxType = 0; // 0 - no message; 1 - success; 2 - info; 3 - warning; 4 - error
+  msgBoxMessage = '';
 
   constructor(
     private pollService: PollService,
@@ -35,12 +37,23 @@ export class PollsComponent implements OnInit {
     });
   }
 
+  showMessageBox(msgType, msgMessage) {
+    this.msgBoxMessage = msgMessage;
+    this.msgBoxType = msgType;
+  }
+
+  onClear() {
+    this.showMessageBox(0, '');
+  }
+
   navigateQuestions(poll: Poll) {
     this.router.navigateByUrl(`/pollquestions/${poll.id}`);
   }
 
 
   deletePoll(poll: Poll) {
+    this.onClear();
+
     // Remove From UI
     this.polls = this.polls.filter(t => t.id !== poll.id);
     // Remove from server
@@ -54,6 +67,8 @@ export class PollsComponent implements OnInit {
   }
 
   addPoll(poll: Poll) {
+    this.onClear();
+
     this.pollService.addPoll(poll).subscribe(res => {
       let newPoll = {
         id: res['id'],
@@ -72,6 +87,7 @@ export class PollsComponent implements OnInit {
   }
 
   openModal(content, poll: Poll) {
+    this.onClear();
     this.loadUsers();
 
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
@@ -82,37 +98,36 @@ export class PollsComponent implements OnInit {
       if (result === "Send click") {
         let pollRequest = {
           pollid: poll.id,
-          requestorid: this.userService.getUserInfo().id,
+          sentby: this.userService.getUserInfo().id,
           userid: lodash.chain(this.users)
             .filter(usr => usr.checked)
-            .map(function(object) {
-              return object.id;
-          })
-          .value()
+            .map(function (object) {
+              return { 
+                id: object.id, 
+                email: object.email, 
+                phone: object.phone, 
+                firstname: object.firstname, 
+                lastname: object.lastname, 
+                isadmin: object.isadmin };
+            })
+            .value()
         }
 
-
-        console.log('sending emails for poll ' + JSON.stringify(pollRequest));
-
         this.pollService.sendInvitation(pollRequest).subscribe(res => {
-          // let newPoll = {
-          //   id: res['id'],
-          //   name: res['name'],
-          //   description: res['description'],
-          //   authorid: res['authorid'],
-          //   authorname: res['authorname']
-          // }
-    
-          // if (!this.polls) {
-          //   this.polls = [newPoll];
-          // } else {
-          //   this.polls.push(newPoll);
-          // }
+          let msg = '';
+          for (let i = 0; i < res['url'].length; i++) {
+            msg += `${window.location.protocol}//${window.location.hostname}`;
+
+            if(window.location.port){
+              msg += `:${window.location.port}`;
+            }
+
+            msg += `${this.constants.REQRES_API_VOTE_URL}/${res['url'][i]}\n`
+          }
+
+          this.showMessageBox(2, `Users notified: \n ${msg}`);
         });
       }
-
-
-
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
       console.log(`Dismissed ${this.getDismissReason(reason)}`);
@@ -133,6 +148,7 @@ export class PollsComponent implements OnInit {
   }
 
   loadUsers() {
+    this.onClear();
     if (this.users.length != 0) return;
 
     this.usersLoaded = false;
