@@ -146,7 +146,6 @@ class Poll {
         // }
     }
 
-
     pollrequest(req, res) {
         var pollid = req.body.pollid;
         var sentby = req.body.sentby;
@@ -179,6 +178,36 @@ class Poll {
                 return res.status(500).send(err);
             }
             )
+    }
+
+    pollrequeststatus(req, res) {
+        var prid = req.body.pollrequestid;
+        var userid = req.body.userid;
+        var status = req.body.status;
+        var force = req.body.force ? req.body.force : false;
+
+        if (!prid || !userid || !status) {
+            return res.status(400).send({ msg: SERVICE_CONSTANTS.BAD_REQUEST });
+        }
+
+        let query = `UPDATE bryllyant.pollrequestsstatus SET status=${status}, updatedon=NOW() WHERE (userid=${userid} AND id=${prid}`;
+
+        if(force) {
+            query += `)`;
+        } else {
+            // update only if new status greater than current
+            query += ` AND status<${status})`;
+        }
+
+        PostgresHelper.query(query, (err, response) => {
+            logger.debug({ context: { query } }, 'Dumping query');
+            if (err) {
+                logger.error({ err })
+                return res.status(400).send(err);
+            } else {
+                return res.status(200).send({ msg: SERVICE_CONSTANTS.POLL_REQUEST.STATUS_UPDATED });
+            }
+        });
     }
 
     addpollrequest(pollid, sentby) {
@@ -228,7 +257,7 @@ class Poll {
                     //1. send email then resolve     
                     //1.1 generate user access token
                     // jwt.sign(user, SERVICE_CONSTANTS.AUTH.APP_SECRET, { expiresIn: SERVICE_CONSTANTS.AUTH.TOKEN_EXPIRES_IN }, (err, token) => {
-                    
+
                     user.pollid = pollid;
                     user.requestid = requestid;
                     jwt.sign(user, SERVICE_CONSTANTS.AUTH.APP_SECRET, (err, token) => {

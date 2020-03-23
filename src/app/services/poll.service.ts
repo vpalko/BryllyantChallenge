@@ -38,4 +38,9 @@ export class PollService {
   sendInvitation(data): Observable<Poll> {
     return this.httpClient.post<Poll>(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_POLL_URL}/pollrequest`, data, httpOptions);
   }
+
+  // Send poll invitations
+  updatePollRequestStatus(data): Observable<Poll> {
+    return this.httpClient.post<Poll>(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_POLL_URL}/pollrequeststatus`, data, httpOptions);
+  }
 }

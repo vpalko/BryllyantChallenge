@@ -15,6 +15,10 @@ router.post('/pollrequest', auth.verifyToken, auth.isAdmin, (req, res) => {
     poll.pollrequest(req, res);
 })
 
+router.post('/pollrequeststatus', auth.verifyToken, auth.isAdmin, (req, res) => {
+    poll.pollrequeststatus(req, res);
+})
+
 router.get('/', auth.verifyToken, (req, res) => {
     poll.getpoll(req, res);
 })

@@ -29,6 +29,9 @@ module.exports = {
         INVALIDAUTHORID: "Invalid author id",
         UNABLE_TO_SEND_INVITATION: "Unable to send poll invitation"
     },
+    POLL_REQUEST: {
+        STATUS_UPDATED: "Status successfully updated",
+    },
     QUESTION: {
         CREATED: "Question successfully created",
         UPDATED: "Question successfully updated",

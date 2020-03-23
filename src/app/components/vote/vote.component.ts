@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Constants } from '../../shared/constants';
+import { PollService } from '../../services/poll.service';
 import { UserService } from '../../services/user.service';
 import { Question } from '../../models/Question';
 import { QuestionService } from '../../services/question.service';
@@ -21,6 +22,7 @@ export class VoteComponent implements OnInit {
   constructor(
     private questionService: QuestionService,
     private constants: Constants,
+    private pollService: PollService,
     private activeRoute: ActivatedRoute,
     private userService: UserService) { }
 
@@ -39,6 +41,31 @@ export class VoteComponent implements OnInit {
           isadmin: data['isadmin'],
           token: data['token']
         });
+
+
+        //update poll request status
+        let statusData = {
+          pollrequestid: data['requestid'],
+          userid: data['id'],
+          status: 1,
+          force: false
+        }
+        this.pollService.updatePollRequestStatus(statusData).subscribe(res => {
+          console.log(res['msg']);
+          // let msg = '';
+          // for (let i = 0; i < res['url'].length; i++) {
+          //   msg += `${window.location.protocol}//${window.location.hostname}`;
+
+          //   if(window.location.port){
+          //     msg += `:${window.location.port}`;
+          //   }
+
+          //   msg += `${this.constants.REQRES_API_VOTE_URL}/${res['url'][i]}\n`
+          // }
+
+          // this.showMessageBox(2, `Users notified: \n ${msg}`);
+        });
+
 
         // make new API to load questions with already answered questions
         // this.questionService.getQuestions(data['pollid']).subscribe(questions => {
