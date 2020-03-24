@@ -1,0 +1,25 @@
+.pollDescription {
+    font-size: small;
+    color: grey;
+    margin-top: 0px;
+    margin-bottom: 1px;
+}
+
+.pollHeader {
+    font-weight: bold;
+    margin-top: 0px;
+    margin-bottom: 1px;
+}
+
+.pollDescriptionInfoDiv {
+    padding-bottom: 10px;
+}
+
+.even {
+    /* color: red; */
+    background: rgb(248, 248, 248);
+}
+
+.odd {
+    /* color: green; */
+}

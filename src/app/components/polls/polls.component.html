@@ -44,7 +44,7 @@
       <div *ngIf="usersLoaded">
         <p>Please select poll request recepients:</p>
 
-        <div *ngFor="let user of users; let i = index">
+        <div *ngFor="let user of users; index as i">
           <label>
             <input type="checkbox" [checked]="user.checked" [value]="user.email" (change)="onCheckboxChange(i, $event)" />
             {{user.lastname}}, {{user.firstname}}

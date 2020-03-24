@@ -13,11 +13,19 @@ import * as lodash from 'lodash';
   styleUrls: ['./vote.component.css']
 })
 export class VoteComponent implements OnInit {
-  questions: Question[];
+  questions: any;
   loginError: boolean = false;
   loading: boolean = true;
   msgBoxType = 0; // 0 - no message; 1 - success; 2 - info; 3 - warning; 4 - error
   msgBoxMessage = '';
+
+  userName: string = '';
+  pollName: string = '';
+  pollDescription: string = '';
+
+  pollid: number;
+  requestid: number;
+  userid: number;
 
   constructor(
     private questionService: QuestionService,
@@ -29,7 +37,7 @@ export class VoteComponent implements OnInit {
   ngOnInit(): void {
     // validate user
     let token = this.activeRoute.snapshot.params.id;
-    console.log(token);
+
     this.userService.logintoken(token).subscribe(
       data => {
         this.userService.setUserInfo({
@@ -42,37 +50,39 @@ export class VoteComponent implements OnInit {
           token: data['token']
         });
 
+        this.userName = `${data['lastname']}, ${data['firstname']}`;
+        this.userid = data['id'];
+        this.pollid = data['pollid'];
+        this.requestid = data['requestid'];
+
 
         //update poll request status
         let statusData = {
-          pollrequestid: data['requestid'],
-          userid: data['id'],
+          pollrequestid: this.requestid,
+          userid: this.userid,
           status: 1,
           force: false
         }
-        this.pollService.updatePollRequestStatus(statusData).subscribe(res => {
-          console.log(res['msg']);
-          // let msg = '';
-          // for (let i = 0; i < res['url'].length; i++) {
-          //   msg += `${window.location.protocol}//${window.location.hostname}`;
-
-          //   if(window.location.port){
-          //     msg += `:${window.location.port}`;
-          //   }
-
-          //   msg += `${this.constants.REQRES_API_VOTE_URL}/${res['url'][i]}\n`
-          // }
-
-          // this.showMessageBox(2, `Users notified: \n ${msg}`);
-        });
+        this.pollService.updatePollRequestStatus(statusData); //.subscribe(res => {});
 
 
-        // make new API to load questions with already answered questions
-        // this.questionService.getQuestions(data['pollid']).subscribe(questions => {
-        //   this.questions = questions;
-        // });
+        this.pollService.getPoll(this.pollid).subscribe(
+          data => {
+            this.pollName = data[0].name;
+            this.pollDescription = data[0].description;
 
-        this.loading = false;
+            //load questions
+            this.questionService.getQuestionsAnswers(this.pollid, this.requestid, this.userid).subscribe(questions => {
+              this.questions = questions;
+              console.log(this.questions);
+            });
+            this.loading = false;
+          },
+          error => {
+            console.log("undable to load poll");
+            this.loading = false;
+          });
+
       },
       err => {
         this.loading = false;
@@ -88,5 +98,9 @@ export class VoteComponent implements OnInit {
 
   onClear() {
     this.showMessageBox(0, '');
+  }
+
+  answerQuestion(idx, event) {
+    this.questions[idx].answer = (event.target.value==="Yes") ? true : false;
   }
 }

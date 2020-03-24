@@ -15,15 +15,46 @@
 </div>
 
 <div *ngIf="loading">
-    <span  class="spinner-border spinner-border-sm mr-1"></span>
+    <span class="spinner-border spinner-border-sm mr-1"></span>
     Loading poll questions...
 </div>
 
+<div class="row">
+    <h1>Welcome {{userName}}</h1>
+</div>
+<div class="row pollDescriptionDiv">
+    <div class="col-sm-12">
+        <div>
+            <p class="pollHeader">{{pollName}}</p>
+        </div>
 
-<app-vote-item 
-  *ngFor="let poll of polls" 
-  [poll]="poll" 
-  (deletePoll)="deletePoll($event)"
-  (openModal)="openModal(mymodal, $event)"
-  (navigateQuestions)="navigateQuestions($event)">
-</app-vote-item>
+        <div style="padding-left: 15px">
+            <p class="pollDescription">{{pollDescription}}</p>
+        </div>
+    </div>
+</div>
+<br>
+
+<form (ngSubmit)="onSubmit()">
+    <div *ngFor="let question of questions; index as i; let odd=odd; let even=even;">
+        <div class="row" [ngClass]="{ odd: odd, even: even }" *ngIf="i===0 || questions[i-1].answer!==null" >
+            <div class="col-sm-2">
+                <input  type="radio" 
+                        name="{{'yes_no' + question.id}}"
+                        value="Yes"
+                        (click)="answerQuestion(i, $event)" 
+                        [checked]="question.answer!='' && question.answer===true" /> Yes
+
+                <input  type="radio" 
+                        name="{{'yes_no' + question.id}}" 
+                        value="No"
+                        (click)="answerQuestion(i, $event)" 
+                        [checked]="question.answer!='' && question.answer===false" /> No
+            </div>
+            <div class="col-sm-9">
+                <label for="yes_no_radio">{{question.question}}</label>
+            </div>
+        </div>
+    </div>
+    <!-- <input type="submit" value="save" /> -->
+</form>

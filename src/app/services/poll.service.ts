@@ -19,6 +19,11 @@ export class PollService {
 
   constructor(private httpClient: HttpClient, private constants: Constants) { }
 
+  // Get Poll
+  getPoll(id) {
+    return this.httpClient.get(`${this.pollsUrl}/${id}`, httpOptions);
+  }
+
   // Get Polls
   getPolls(): Observable<Poll[]> {
     return this.httpClient.get<Poll[]>(`${this.pollsUrl}`);
@@ -26,21 +31,21 @@ export class PollService {
 
   // Delete Poll
   deletePoll(id) {
-    return this.httpClient.delete(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_POLL_URL}/${id}`, httpOptions);
+    return this.httpClient.delete(`${this.pollsUrl}/${id}`, httpOptions);
   }
 
   // Add Poll
   addPoll(poll: Poll): Observable<Poll> {
-    return this.httpClient.post<Poll>(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_POLL_URL}/new`, poll, httpOptions);
+    return this.httpClient.post<Poll>(`${this.pollsUrl}/new`, poll, httpOptions);
   }
 
   // Send poll invitations
   sendInvitation(data): Observable<Poll> {
-    return this.httpClient.post<Poll>(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_POLL_URL}/pollrequest`, data, httpOptions);
+    return this.httpClient.post<Poll>(`${this.pollsUrl}/pollrequest`, data, httpOptions);
   }
 
   // Send poll invitations
   updatePollRequestStatus(data): Observable<Poll> {
-    return this.httpClient.post<Poll>(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_POLL_URL}/pollrequeststatus`, data, httpOptions);
+    return this.httpClient.post<Poll>(`${this.pollsUrl}/pollrequeststatus`, data, httpOptions);
   }
 }

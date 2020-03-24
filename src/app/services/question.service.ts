@@ -16,12 +16,19 @@ const httpOptions = {
 })
 export class QuestionService {
   questionsUrl: string = `${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_QUESTION_URL}`;
+  answerUrl: string = `${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_ANSWER_URL}`;
+
 
   constructor(private httpClient: HttpClient, private constants: Constants) { }
 
   // Get Questions
   getQuestions(pollid): Observable<Question[]> {
     return this.httpClient.get<Question[]>(`${this.questionsUrl}/poll/${pollid}`);
+  }
+
+  // Get Questions and Answers
+  getQuestionsAnswers(pollid, requestid, userid) {
+    return this.httpClient.get(`${this.answerUrl}/${pollid}/${requestid}/${userid}`);
   }
 
   // Delete Question
