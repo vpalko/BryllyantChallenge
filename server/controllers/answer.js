@@ -11,4 +11,8 @@ router.get('/:pollid/:requestid/:userid', auth.verifyToken, (req, res) => {
     answer.getuserquestions(req, res);
 })
 
+router.post('/save', auth.verifyToken, (req, res) => {
+    answer.saveanswers(req, res);
+})
+
 module.exports = router;

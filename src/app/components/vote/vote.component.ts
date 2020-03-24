@@ -6,6 +6,7 @@ import { UserService } from '../../services/user.service';
 import { Question } from '../../models/Question';
 import { QuestionService } from '../../services/question.service';
 import * as lodash from 'lodash';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-vote',
@@ -26,6 +27,13 @@ export class VoteComponent implements OnInit {
   pollid: number;
   requestid: number;
   userid: number;
+
+  polldone: boolean = false;
+  formsubmitted: boolean = false;
+  pollsubmitted: boolean = false;
+  pollsubmittedOn;
+  pollsaving: boolean = false;
+  pollsubmitting: boolean = false;
 
   constructor(
     private questionService: QuestionService,
@@ -57,14 +65,19 @@ export class VoteComponent implements OnInit {
 
 
         //update poll request status
+        // 0 - none; 1 - viewes; 2 - in progress; 3 - complete
         let statusData = {
           pollrequestid: this.requestid,
           userid: this.userid,
           status: 1,
           force: false
         }
-        this.pollService.updatePollRequestStatus(statusData); //.subscribe(res => {});
-
+        this.pollService.updatePollRequestStatus(statusData).subscribe(res => {
+          if (res.status === 3) {
+            this.pollsubmitted = true;
+            this.pollsubmittedOn = `${moment(res.updatedon).fromNow()} (${moment(res.updatedon).format('L')})`;
+          }
+        });
 
         this.pollService.getPoll(this.pollid).subscribe(
           data => {
@@ -74,7 +87,6 @@ export class VoteComponent implements OnInit {
             //load questions
             this.questionService.getQuestionsAnswers(this.pollid, this.requestid, this.userid).subscribe(questions => {
               this.questions = questions;
-              console.log(this.questions);
             });
             this.loading = false;
           },
@@ -101,6 +113,55 @@ export class VoteComponent implements OnInit {
   }
 
   answerQuestion(idx, event) {
-    this.questions[idx].answer = (event.target.value==="Yes") ? true : false;
+    this.showMessageBox(0, '');
+
+    this.questions[idx].answer = (event.target.value === "Yes") ? true : false;
+
+    if (lodash.findIndex(this.questions, { 'answer': null }) === -1) {
+      this.polldone = true;
+    }
+  }
+
+  saveAnswers(save: boolean) {
+    this.showMessageBox(0, '');
+
+    if (save === true) { // save
+      this.pollsaving = true;
+    } else { //submit/finish
+      this.pollsubmitting = true;
+    }
+
+
+    //save answers
+    let answersData = {
+      pollid: this.pollid,
+      pollrequestid: this.requestid,
+      userid: this.userid,
+      answers: this.questions.filter((question) => { return question.answer != null })
+    }
+
+
+    this.questionService.saveAnswers(answersData).subscribe(res => {
+      //update poll request status
+      // 0 - none; 1 - viewes; 2 - in progress; 3 - complete
+      let statusData = {
+        pollrequestid: this.requestid,
+        userid: this.userid,
+        status: save === true ? 2 : 3,
+        force: true
+      }
+
+      this.pollService.updatePollRequestStatus(statusData).subscribe(res => {
+        this.pollsaving = false;
+        this.pollsubmitting = false;
+
+        if (save === true) {
+          this.showMessageBox(2, 'Poll answers saved successfully. You can continue now or later');
+        } else {
+          this.formsubmitted = true;
+          this.showMessageBox(2, 'Poll answers submitted successfully. You are all done!');
+        }
+      });
+    });
   }
 }

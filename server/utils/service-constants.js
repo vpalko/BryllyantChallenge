@@ -37,6 +37,10 @@ module.exports = {
         UPDATED: "Question successfully updated",
         DELETED: "Question successfully deleted",
         INVALID: "Invalid question id"
+    },
+    ANSWER: {
+        SAVED: "User answers successfully saved",
+        UNABLE_TO_SAVE: "Unable to save answers"
     }
   }
   

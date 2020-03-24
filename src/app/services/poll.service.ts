@@ -45,7 +45,7 @@ export class PollService {
   }
 
   // Send poll invitations
-  updatePollRequestStatus(data): Observable<Poll> {
-    return this.httpClient.post<Poll>(`${this.pollsUrl}/pollrequeststatus`, data, httpOptions);
+  updatePollRequestStatus(data): Observable<any> {
+    return this.httpClient.post(`${this.pollsUrl}/pollrequeststatus`, data, httpOptions);
   }
 }

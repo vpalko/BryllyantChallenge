@@ -32,6 +32,79 @@ class Answer {
             }
         });
     }
+
+    saveanswers(req, res) {
+        var pollid = req.body.pollid;
+        var pollrequestid = req.body.pollrequestid;
+        var userid = req.body.userid;
+        var answers = req.body.answers; 
+        var saveAnswersPromises = [];       
+
+        if (!pollid || !pollrequestid || !userid || !answers) {
+            return res.status(400).send({ msg: SERVICE_CONSTANTS.BAD_REQUEST });
+        }
+
+        for (var index = 0; index < answers.length; index++) {
+            saveAnswersPromises.push(this.updateAnswer(pollid, pollrequestid, userid, answers[index]));
+        }
+
+        Promise.all(saveAnswersPromises)
+            .then(function () {
+                return res.status(200).send({ msg: SERVICE_CONSTANTS.ANSWER.SAVED, data: req.body });
+            })
+            .catch((err) => {
+                logger.error({ err });
+                return res.status(400).send({ error: SERVICE_CONSTANTS.ANSWER.UNABLE_TO_SAVE });
+            });
+
+    }
+
+    updateAnswer(pollid, pollrequestid, userid, answers) {
+        return new Promise((resolve, reject) => {
+
+            let query = `UPDATE bryllyant.answers SET answer=${answers.answer} WHERE pollid=${pollid} AND requestid=${pollrequestid} AND userid=${userid} AND questionid=${answers.id}`;
+    
+            PostgresHelper.query(query, (err, response) => {
+                logger.debug({ context: { query } }, 'Dumping query');
+                if (err) {
+                    logger.error({ err })
+                    reject();
+                } else if (!response.rowCount || response.rowCount === 0) {
+                    // answer does not exist try to insert
+                    this.insertAnswer(pollid, pollrequestid, userid, answers)
+                    .then(function () {
+                        resolve();
+                    })
+                    .catch((err) => {
+                        reject(err);
+                    });
+
+                } else {
+                    resolve(response.rows);
+                }
+            });
+        });
+    }
+
+    insertAnswer(pollid, pollrequestid, userid, answers) {
+        return new Promise((resolve, reject) => {
+            let query = 'INSERT INTO bryllyant.answers(pollid, requestid, userid, questionid, answer) VALUES($1, $2, $3, $4, $5)';
+            let data = [pollid, pollrequestid, userid, answers.id, answers.answer];
+
+            PostgresHelper.queryData(query, data, (err, response) => {
+                logger.debug({ context: { query } }, 'Dumping query');
+                if (err) {
+                    logger.error({ err })
+                    reject(err);
+                } else if (!response.rowCount || response.rowCount === 0) {
+                    reject();
+                } else {
+                    resolve(response.rows);
+                }
+            });
+        });
+    }
+
 }
 
 module.exports = new Answer();

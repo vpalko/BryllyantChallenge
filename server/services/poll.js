@@ -205,7 +205,19 @@ class Poll {
                 logger.error({ err })
                 return res.status(400).send(err);
             } else {
-                return res.status(200).send({ msg: SERVICE_CONSTANTS.POLL_REQUEST.STATUS_UPDATED });
+                let query = `SELECT status, updatedon FROM bryllyant.pollrequestsstatus WHERE(userid=${userid} AND id=${prid})`;
+
+                PostgresHelper.query(query, (err, response) => {
+                    logger.debug({ context: { query } }, 'Dumping query');
+                    if (err) {
+                        logger.error({ err })
+                        return res.status(400).send(err);
+                    } else if (!response.rowCount || response.rowCount === 0) {
+                        return res.status(400).send('Unable to get status');
+                    } else {
+                        return res.status(200).send({ msg: SERVICE_CONSTANTS.POLL_REQUEST.STATUS_UPDATED, status: response.rows[0].status, updatedon: response.rows[0].updatedon });
+                    }
+                });
             }
         });
     }

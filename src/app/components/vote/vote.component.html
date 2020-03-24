@@ -35,26 +35,43 @@
 </div>
 <br>
 
-<form (ngSubmit)="onSubmit()">
-    <div *ngFor="let question of questions; index as i; let odd=odd; let even=even;">
-        <div class="row" [ngClass]="{ odd: odd, even: even }" *ngIf="i===0 || questions[i-1].answer!==null" >
-            <div class="col-sm-2">
-                <input  type="radio" 
-                        name="{{'yes_no' + question.id}}"
-                        value="Yes"
-                        (click)="answerQuestion(i, $event)" 
-                        [checked]="question.answer!='' && question.answer===true" /> Yes
-
-                <input  type="radio" 
-                        name="{{'yes_no' + question.id}}" 
-                        value="No"
-                        (click)="answerQuestion(i, $event)" 
-                        [checked]="question.answer!='' && question.answer===false" /> No
+<form>
+    <div *ngIf="pollsubmitted">
+        <h2>You are alreaddy submitted your answers: {{pollsubmittedOn}}</h2>
+    </div>
+    <div *ngIf="!pollsubmitted">
+        <div [ngClass]="{'qdisabled': (pollsaving || pollsubmitting || formsubmitted)}">
+            <div *ngFor="let question of questions; index as i; let odd=odd; let even=even;">
+                <div class="row" [ngClass]="{ odd: odd, even: even }" *ngIf="i===0 || (questions[i-1].answer!==null && questions[i-1].answer!=='')">
+                    <div class="col-sm-1" style="padding-right: 0px">
+                        <input type="radio" name="{{'yes_no' + question.id}}" value="Yes"
+                            (click)="answerQuestion(i, $event)" 
+                            [checked]="question.answer!==null && question.answer!=='' && question.answer===true" />
+                        Yes
+    
+                        <input type="radio" name="{{'yes_no' + question.id}}" value="No" (click)="answerQuestion(i, $event)"
+                            [checked]="question.answer!==null && question.answer!=='' && question.answer===false" /> No
+                    </div>
+                    <div class="col-sm-9" style="padding-left: 0px">
+                        <label for="yes_no_radio">{{question.question}}</label>
+                    </div>
+                </div>
             </div>
-            <div class="col-sm-9">
-                <label for="yes_no_radio">{{question.question}}</label>
+
+            <div class="row" style="padding-top: 20px">
+                <div class="form-group">
+                    <button [disabled]="polldone" class="btn btn-primary" style="margin-right: 20px"
+                        (click)="saveAnswers(true)">
+                        <span *ngIf="pollsaving" class="spinner-border spinner-border-sm mr-1"></span>
+                        Save
+                    </button>
+        
+                    <button [disabled]="!polldone" class="btn btn-primary" (click)="saveAnswers(false)">
+                        <span *ngIf="pollsubmitting" class="spinner-border spinner-border-sm mr-1"></span>
+                        Submit
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-    <!-- <input type="submit" value="save" /> -->
 </form>

@@ -31,13 +31,18 @@ export class QuestionService {
     return this.httpClient.get(`${this.answerUrl}/${pollid}/${requestid}/${userid}`);
   }
 
+  // Save answers
+  saveAnswers(data): Observable<any> {
+    return this.httpClient.post(`${this.answerUrl}/save`, data, httpOptions);
+  }
+
   // Delete Question
   deletPolleQuestion(id) {
-    return this.httpClient.delete(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_QUESTION_URL}/${id}`, httpOptions);
+    return this.httpClient.delete(`${this.questionsUrl}/${id}`, httpOptions);
   }
 
   // Add Question
   addPollQuestion(question: Question): Observable<Question> {
-    return this.httpClient.post<Question>(`${this.constants.REQRES_API_BASE_URL}${this.constants.REQRES_API_QUESTION_URL}/new`, question, httpOptions);
+    return this.httpClient.post<Question>(`${this.questionsUrl}/new`, question, httpOptions);
   }
 }

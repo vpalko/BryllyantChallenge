@@ -23,3 +23,16 @@
 .odd {
     /* color: green; */
 }
+
+/* .btn {
+    width: 80px;
+} */
+
+.btn.disabled, .btn:disabled {
+    cursor: no-drop;
+}
+
+.qdisabled {
+    pointer-events: none;
+    opacity: 0.4;
+}
