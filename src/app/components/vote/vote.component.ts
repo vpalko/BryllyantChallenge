@@ -34,6 +34,8 @@ export class VoteComponent implements OnInit {
   pollsubmittedOn;
   pollsaving: boolean = false;
   pollsubmitting: boolean = false;
+  totalQuestions: number = 0;
+  totalAnswered: number = 0;
 
   constructor(
     private questionService: QuestionService,
@@ -87,8 +89,10 @@ export class VoteComponent implements OnInit {
             //load questions
             this.questionService.getQuestionsAnswers(this.pollid, this.requestid, this.userid).subscribe(questions => {
               this.questions = questions;
+              this.totalQuestions = this.questions.length;
+              this.getTotalAnswered();
+              this.loading = false;
             });
-            this.loading = false;
           },
           error => {
             console.log("undable to load poll");
@@ -115,11 +119,26 @@ export class VoteComponent implements OnInit {
   answerQuestion(idx, event) {
     this.showMessageBox(0, '');
 
-    this.questions[idx].answer = (event.target.value === "Yes") ? true : false;
+    this.questions[idx].answer = (event.target.textContent === "Yes") ? true : false;
 
     if (lodash.findIndex(this.questions, { 'answer': null }) === -1) {
       this.polldone = true;
     }
+
+    this.getTotalAnswered();
+  }
+
+
+  getTotalAnswered(){
+    let answeredQuestions = this.questions.filter((item) => (item.answer!==null && item.answer!==''));
+    this.totalAnswered = answeredQuestions.length;
+  }
+
+  clearAnswers(){
+    this.questions.forEach((item) => {
+      item.answer = null;
+    });
+    this.getTotalAnswered();
   }
 
   saveAnswers(save: boolean) {

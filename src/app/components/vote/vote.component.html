@@ -37,20 +37,31 @@
 
 <form>
     <div *ngIf="pollsubmitted">
-        <h2>You are alreaddy submitted your answers: {{pollsubmittedOn}}</h2>
+        <h2>You are alreaddy submitted your answers: <span style="color: red;">{{pollsubmittedOn}}</span></h2>
     </div>
     <div *ngIf="!pollsubmitted">
         <div [ngClass]="{'qdisabled': (pollsaving || pollsubmitting || formsubmitted)}">
             <div *ngFor="let question of questions; index as i; let odd=odd; let even=even;">
-                <div class="row" [ngClass]="{ odd: odd, even: even }" *ngIf="i===0 || (questions[i-1].answer!==null && questions[i-1].answer!=='')">
-                    <div class="col-sm-1" style="padding-right: 0px">
-                        <input type="radio" name="{{'yes_no' + question.id}}" value="Yes"
+                <div class="row" [ngClass]="{ odd: odd, even: even }"
+                    *ngIf="i===0 || (questions[i-1].answer!==null && questions[i-1].answer!=='')">
+                    <div class="col-sm-2" style="padding-right: 0px">
+                        <button id="Yes"
+                            [ngClass]="(question.answer!==null && question.answer!=='' && question.answer===true) ? 'btn btn-yes-no btn-success border border-success' : 'btn btn-yes-no btn-light border border-success'"
+                            (click)="answerQuestion(i, $event)"><i class="fa fa-check"><span
+                                    class="span-yes-no">Yes</span></i></button>
+
+                        <button id="No"
+                            [ngClass]="(question.answer!==null && question.answer!=='' && question.answer===false) ? 'btn btn-yes-no btn-success border border-success' : 'btn btn-yes-no btn-light border border-success'"
+                            (click)="answerQuestion(i, $event)"><i class="fa fa-times"><span
+                                    class="span-yes-no">No</span></i></button>
+
+                        <!-- <input type="radio" name="{{'yes_no' + question.id}}" value="Yes"
                             (click)="answerQuestion(i, $event)" 
                             [checked]="question.answer!==null && question.answer!=='' && question.answer===true" />
                         Yes
     
                         <input type="radio" name="{{'yes_no' + question.id}}" value="No" (click)="answerQuestion(i, $event)"
-                            [checked]="question.answer!==null && question.answer!=='' && question.answer===false" /> No
+                            [checked]="question.answer!==null && question.answer!=='' && question.answer===false" /> No -->
                     </div>
                     <div class="col-sm-9" style="padding-left: 0px">
                         <label for="yes_no_radio">{{question.question}}</label>
@@ -58,17 +69,29 @@
                 </div>
             </div>
 
-            <div class="row" style="padding-top: 20px">
+            <div class=row style="padding-top: 50px">
+            </div>
+                <p>Total {{totalQuestions}} questions. (answered {{totalAnswered}})</p>
+                <hr />
+            <div class="row">
                 <div class="form-group">
                     <button [disabled]="polldone" class="btn btn-primary" style="margin-right: 20px"
                         (click)="saveAnswers(true)">
                         <span *ngIf="pollsaving" class="spinner-border spinner-border-sm mr-1"></span>
+                        <span *ngIf="!pollsaving" class="fa fa-save"></span>
                         Save
                     </button>
-        
-                    <button [disabled]="!polldone" class="btn btn-primary" (click)="saveAnswers(false)">
+
+                    <button [disabled]="!polldone" class="btn btn-primary" style="margin-right: 20px"
+                        (click)="saveAnswers(false)">
                         <span *ngIf="pollsubmitting" class="spinner-border spinner-border-sm mr-1"></span>
+                        <span *ngIf="!pollsubmitting" class="fa fa-angle-double-right"></span>
                         Submit
+                    </button>
+
+                    <button class="btn btn-danger" style="margin-right: 20px" (click)="clearAnswers()">
+                        <span class="fa fa-eraser"></span>
+                        Clear
                     </button>
                 </div>
             </div>
