@@ -42,7 +42,7 @@ class Question {
                 logger.debug({ context: { query } }, 'Dumping query');
                 if (err) {
                     logger.error({ err })
-                    reject();
+                    reject(err);
                 } else if (!response.rowCount || response.rowCount === 0) {
                     reject();
                 } else {

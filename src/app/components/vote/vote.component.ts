@@ -138,6 +138,7 @@ export class VoteComponent implements OnInit {
     this.questions.forEach((item) => {
       item.answer = null;
     });
+    this.polldone = false;
     this.getTotalAnswered();
   }
 
