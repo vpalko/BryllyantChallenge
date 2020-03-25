@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-poll-report',
@@ -7,13 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PollReportComponent implements OnInit {
   currentReport: number = 0;
+  pollid: number = 0;
 
-  constructor() { }
+  constructor(private activeRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.pollid = this.activeRoute.snapshot.params.id; //pollid is in querystring
   }
 
-  setCurrentReport(id){
+  setCurrentReport(id) {
     this.currentReport = id;
   }
 

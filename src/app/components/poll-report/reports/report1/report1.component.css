@@ -1,0 +1,36 @@
+h1 {
+    text-align: center;
+    /* color: blueviolet; */
+}
+
+#report {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#report td, #report th {
+    border: 1px solod #ddd;
+    padding: 8px;
+}
+
+#report tr:nth-child(even){
+    background-color: #f2f2f2;
+}
+
+#report tr:hover {
+    background-color: #ddd;
+}
+
+#report th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    /* background-color: blueviolet; */
+    /* color: white; */
+}
+
+#report .count {
+    text-align: right;
+    width: 150px;
+}

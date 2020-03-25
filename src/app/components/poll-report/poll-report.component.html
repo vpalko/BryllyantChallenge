@@ -100,8 +100,8 @@
 </div>
 
 <div class="row">
-    <app-report1 *ngIf="currentReport==1"></app-report1>
-    <app-report2 *ngIf="currentReport==2"></app-report2>
-    <app-report3 *ngIf="currentReport==3"></app-report3>
-    <app-report4 *ngIf="currentReport==4"></app-report4>
+    <app-report1 *ngIf="currentReport==1" [pollid]="pollid"></app-report1>
+    <app-report2 *ngIf="currentReport==2" [pollid]="pollid"></app-report2>
+    <app-report3 *ngIf="currentReport==3" [pollid]="pollid"></app-report3>
+    <app-report4 *ngIf="currentReport==4" [pollid]="pollid"></app-report4>
 </div>

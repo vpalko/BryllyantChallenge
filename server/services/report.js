@@ -2,6 +2,7 @@ const PostgresHelper = require('../utils/postgres-helper');
 const POSTGRES_ERRORS = require('pg-error-constants');
 const SERVICE_CONSTANTS = require('../utils/service-constants');
 const lodash = require('lodash');
+const moment = require('moment');
 
 var log4js = require('log4js');
 var logger = log4js.getLogger();
@@ -36,10 +37,15 @@ class Report {
                 // } else {
                 return res.status(400).send(err);
                 // }
-            } else if (!response.rowCount || response.rowCount === 0) {
-                return res.status(404).end();
+            // } else if (!response.rowCount || response.rowCount === 0) {
+            //     return res.status(404).end();
             } else {
-                let pollRequestData = response.rows;
+                let pollRequestData = response.rows.map(x => {
+                    x.senton = moment(x.senton).format("MMMM Do YYYY, hh:mm a");
+                    return x;
+                }
+                );
+
                 this.getRequestStatusCount(pollid)
                 .then((data)=>{
                     for (var index = 0; index < pollRequestData.length; index++) {
@@ -68,12 +74,12 @@ class Report {
 
             PostgresHelper.query(query, (err, response) => {
                 logger.debug({ context: { query } }, 'Dumping query');
-                if (err) {
-                    logger.error({ err });
-                    reject(err);
-                } else {
+                // if (err) {
+                //     logger.error({ err });
+                //     reject(err);
+                // } else {
                     resolve(response.rows);
-                }
+                // }
             });
         });
     }

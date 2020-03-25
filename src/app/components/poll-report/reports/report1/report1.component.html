@@ -1,1 +1,48 @@
-<p>report1 works!</p>
+<br>
+<h1>Poll request progress</h1>
+
+<table id="report">
+  <tr class="bg-warning">
+    <th>
+      Sent on
+    </th>
+    <th>
+      Requested by
+    </th>
+    <th class="count">
+      Not started
+    </th>
+    <th class="count">
+      Viewed
+    </th>
+    <th class="count">
+      In progress
+    </th>
+    <th class="count">
+      Completed
+    </th>
+  </tr>
+
+  <tr *ngFor="let row of pollRequestData; index as i">
+    <td style="padding-right: 50px;">
+      {{row.senton}}
+    </td>
+
+    <td style="padding-right: 30px;">
+      {{row.requestorname}}
+    </td>
+
+    <td class="count">
+      {{getStatus(i, 0)}}
+    </td>
+    <td class="count">
+      {{getStatus(i, 1)}}
+    </td>
+    <td class="count">
+      {{getStatus(i, 2)}}
+    </td>
+    <td class="count">
+      {{getStatus(i, 3)}}
+    </td>
+  </tr>
+</table>
