@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { PollService } from '../../services/poll.service';
 import { Poll } from 'src/app/models/Poll';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-poll-item',
@@ -13,7 +14,7 @@ export class PollItemComponent implements OnInit {
   @Output() navigateQuestions: EventEmitter<Poll> = new EventEmitter();
   @Output() openModal: EventEmitter<Poll> = new EventEmitter();
 
-  constructor(private pollService: PollService) { }
+  constructor(private pollService: PollService, private router: Router) { }
 
   ngOnInit() { 
   }
@@ -28,5 +29,9 @@ export class PollItemComponent implements OnInit {
 
   onOpenInvitationDialog(poll){
     this.openModal.emit(poll);
+  }
+
+  openPollReportPage(poll){
+    this.router.navigateByUrl(`/pollreport/${poll.id}`);
   }
 }

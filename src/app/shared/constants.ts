@@ -28,6 +28,7 @@ export class Constants {
   REQRES_API_QUESTION_URL = '/question';
   REQRES_API_ANSWER_URL = '/answer';
   REQRES_API_VOTE_URL = '/vote';
+  REQRES_REPORT_URL = '/report';
 
   USER_INFO_SESSION_STORAGE = 'currentuser';
 }

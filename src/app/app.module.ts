@@ -21,6 +21,11 @@ import { PollQuestionsComponent } from './components/poll-questions/poll-questio
 import { AddPollQuestionComponent } from './components/add-poll-question/add-poll-question.component';
 import { VoteComponent } from './components/vote/vote.component';
 import { AppPasswordDirective } from './shared/app-password.directive';
+import { PollReportComponent } from './components/poll-report/poll-report.component';
+import { Report1Component } from './components/poll-report/reports/report1/report1.component';
+import { Report2Component } from './components/poll-report/reports/report2/report2.component';
+import { Report3Component } from './components/poll-report/reports/report3/report3.component';
+import { Report4Component } from './components/poll-report/reports/report4/report4.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +41,12 @@ import { AppPasswordDirective } from './shared/app-password.directive';
     PollQuestionsComponent,
     AddPollQuestionComponent,
     VoteComponent,
-    AppPasswordDirective
+    AppPasswordDirective,
+    PollReportComponent,
+    Report1Component,
+    Report2Component,
+    Report3Component,
+    Report4Component
   ],
   imports: [
     BrowserModule,

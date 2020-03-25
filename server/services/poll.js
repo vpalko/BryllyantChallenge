@@ -65,7 +65,7 @@ class Poll {
         PostgresHelper.query(query, (err, response) => {
             logger.debug({ context: { query } }, 'Dumping query');
             if (err) {
-                logger.error({ err })
+                logger.error({ err });
                 return res.status(400).send(err);
             } else {
                 // logger.debug(response.rows[0]);
@@ -202,7 +202,7 @@ class Poll {
         PostgresHelper.query(query, (err, response) => {
             logger.debug({ context: { query } }, 'Dumping query');
             if (err) {
-                logger.error({ err })
+                logger.error({ err });
                 return res.status(400).send(err);
             } else {
                 let query = `SELECT status, updatedon FROM bryllyant.pollrequestsstatus WHERE(userid=${userid} AND id=${prid})`;
@@ -210,7 +210,7 @@ class Poll {
                 PostgresHelper.query(query, (err, response) => {
                     logger.debug({ context: { query } }, 'Dumping query');
                     if (err) {
-                        logger.error({ err })
+                        logger.error({ err });
                         return res.status(400).send(err);
                     } else if (!response.rowCount || response.rowCount === 0) {
                         return res.status(400).send('Unable to get status');
@@ -230,7 +230,7 @@ class Poll {
             PostgresHelper.queryData(query, data, (err, response) => {
                 logger.debug({ context: { query } }, 'Dumping query');
                 if (err) {
-                    logger.error({ err })
+                    logger.error({ err });
                     reject(err);
                 } else if (!response.rowCount || response.rowCount === 0) {
                     reject();
@@ -240,7 +240,7 @@ class Poll {
                     PostgresHelper.query(query, (err, response) => {
                         logger.debug({ context: { query } }, 'Dumping query');
                         if (err) {
-                            logger.error({ err })
+                            logger.error({ err });
                             reject(err);
                         } else if (!response.rowCount || response.rowCount === 0) {
                             reject();

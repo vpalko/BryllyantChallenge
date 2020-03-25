@@ -21,10 +21,11 @@ export class AppRoutesGuardService implements CanActivate {
     console.log("state", state);
 
     if(this.userService.isLoggedIn()){
+      if(state.url.startsWith("/pollreport") && !this.userService.isAdmin()) {
+        return false;
+      }
       return true;
     } else {
-      // this.router.navigateByUrl('/notauthorized');
-      // return false;
       return this.router.parseUrl('/login');
     }
   }

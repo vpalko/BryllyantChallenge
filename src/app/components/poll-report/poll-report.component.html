@@ -1,0 +1,107 @@
+<div class="row">
+    <div class="col-sm-3">
+        <div [ngClass]="(currentReport==1) ? 'reportDivPressed bg-light' : 'reportDiv bg-primary'"
+            (click)="setCurrentReport(1);">
+            <div class="reportDivHeader">
+                <div class="reportDivHeaderLeft">
+                    By poll request
+                </div>
+                <div class="reportDivHeaderRight">
+                    <i class="fa fa-list"></i>
+                </div>
+            </div>
+            <hr [ngClass]="(currentReport==1) ? 'hrActive' : 'hrInactive'">
+
+            <div class="reportDivContent">
+                <div class="divContent">
+                    <span escape="true" class="divReportDescription">
+
+                        This is a report by poll requests
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-3">
+        <div [ngClass]="(currentReport==2) ? 'reportDivPressed bg-light' : 'reportDiv bg-primary'"
+            (click)="setCurrentReport(2);">
+            <div class="reportDivHeader">
+                <div class="reportDivHeaderLeft">
+                    By user
+                </div>
+                <div class="reportDivHeaderRight">
+                    <i class="fa fa-list"></i>
+                </div>
+            </div>
+            <hr [ngClass]="(currentReport==2) ? 'hrActive' : 'hrInactive'">
+
+
+            <div class="reportDivContent">
+                <div class="divContent">
+                    <span escape="true" class="divReportDescription">
+
+                        This is a report by user
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-3">
+        <div [ngClass]="(currentReport==3) ? 'reportDivPressed bg-light' : 'reportDiv bg-primary'"
+            (click)="setCurrentReport(3);">
+            <div class="reportDivHeader">
+                <div class="reportDivHeaderLeft">
+                    Report 3
+                </div>
+                <div class="reportDivHeaderRight">
+                    <i class="fa fa-list"></i>
+                </div>
+            </div>
+            <hr [ngClass]="(currentReport==3) ? 'hrActive' : 'hrInactive'">
+
+
+            <div class="reportDivContent">
+                <div class="divContent">
+                    <span escape="true" class="divReportDescription">
+
+                        This is a report #3
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-3">
+        <div [ngClass]="(currentReport==4) ? 'reportDivPressed bg-light' : 'reportDiv bg-primary'"
+            (click)="setCurrentReport(4);">
+            <div class="reportDivHeader">
+                <div class="reportDivHeaderLeft">
+                    Report 4
+                </div>
+                <div class="reportDivHeaderRight">
+                    <i class="fa fa-list"></i>
+                </div>
+            </div>
+            <hr [ngClass]="(currentReport==4) ? 'hrActive' : 'hrInactive'">
+
+
+            <div class="reportDivContent">
+                <div class="divContent">
+                    <span escape="true" class="divReportDescription">
+
+                        This is a report #4
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <app-report1 *ngIf="currentReport==1"></app-report1>
+    <app-report2 *ngIf="currentReport==2"></app-report2>
+    <app-report3 *ngIf="currentReport==3"></app-report3>
+    <app-report4 *ngIf="currentReport==4"></app-report4>
+</div>

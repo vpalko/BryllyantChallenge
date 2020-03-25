@@ -1,0 +1,100 @@
+.reportDiv {
+    display: inline-block;
+    vertical-align: top;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    height: 130px;
+    width: 250px;
+    /* change reportDivHeaderLeft:width if change this */
+    min-width: 250px;
+    padding-top: 15px;
+    padding-bottom: 20px;
+    margin: 10px;
+    cursor: pointer;
+    /* background-color:	#ffffff; */
+    color: white;
+    border: 1px solid #c9c9c9;
+}
+
+.reportDivPressed {
+    display: inline-block;
+    vertical-align: top;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    height: 130px;
+    width: 250px;
+    /* change reportDivHeaderLeft:width if change this */
+    min-width: 250px;
+    padding-top: 15px;
+    padding-bottom: 20px;
+    margin: 10px;
+    cursor: pointer;
+    /* background-color:	#ffffff; */
+    color: black;
+    border: 1px solid #c9c9c9;
+    box-shadow: inset 3px 3px 15px 0px #444444;
+}
+
+.hr {
+    margin-bottom: 10px;
+}
+
+.hrActive {
+    border: 1px solid black;
+}
+
+.hrInactive {
+    border: 1px solid white;
+}
+
+.reportDivHeader {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 15px;
+}
+
+.reportDivContent {
+    padding-left: 20px;
+    padding-right: 20px;
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.reportDivHeaderLeft {
+    float: left;
+    text-align: left;
+    /* to cut header and add dots ... "*/
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    /* calculate/set width in the control itself, not here*/
+    /*    width:				285px; */
+}
+
+.reportDivHeaderRight {
+    float: right;
+    text-align: right;
+}
+
+.reportDiv:hover {
+    box-shadow: 0px 5px 7px rgba(0, 0, 0, 0.3);
+    -webkit-transform: scale(1.01);
+    -moz-transform: scale(1.01);
+    -ms-transform: scale(1.01);
+    -o-transform: scale(1.01);
+    transform: scale(1.01);
+}
+
+.divContent {
+    padding-top: 5px;
+    display: block;
+    /* Fallback for non-webkit */
+}
+
+.divReportDescription {
+    font-size: 14px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    letter-spacing: 1px;
+    /* color: 				#575757; */
+}

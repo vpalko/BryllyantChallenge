@@ -7,6 +7,7 @@ import { PollsComponent } from './components/polls/polls.component';
 import { QuestionsComponent } from './components/questions/questions.component';
 import { AppRoutesGuardService } from './services/app-routes-guard.service';
 import { VoteComponent } from './components/vote/vote.component';
+import { PollReportComponent } from './components/poll-report/poll-report.component';
 
 const routes: Routes = [
   { path: '', component: MainComponent, canActivate: [AppRoutesGuardService] },
@@ -14,6 +15,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'polls', component: PollsComponent, canActivate: [AppRoutesGuardService] },
   { path: 'pollquestions/:id', component: QuestionsComponent, canActivate: [AppRoutesGuardService] },
+  { path: 'pollreport/:id', component: PollReportComponent, canActivate: [AppRoutesGuardService] },
   { path: 'vote/:id', component: VoteComponent }
 ];
 

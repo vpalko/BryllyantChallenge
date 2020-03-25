@@ -22,6 +22,10 @@ export class UserService {
         return JSON.parse(sessionStorage.getItem(this.constants.USER_INFO_SESSION_STORAGE));
     }
 
+    isAdmin(){
+        return JSON.parse(sessionStorage.getItem(this.constants.USER_INFO_SESSION_STORAGE)).isadmin;
+    }
+
     setUserInfo(user) {
         sessionStorage.setItem(this.constants.USER_INFO_SESSION_STORAGE, JSON.stringify(user));
 
