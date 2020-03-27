@@ -3,7 +3,7 @@ module.exports = {
     BAD_REQUEST: "BAD REQUEST",
     POSTGRES: {
         USER: "postgres",
-        HOST: "127.0.0.1",
+        HOST: "host.docker.internal",
         DATABASE: "demo",
         PASSWORD: "123",
         PORT: 5432,

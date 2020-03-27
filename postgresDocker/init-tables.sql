@@ -1,11 +1,4 @@
-# SERVER
-
-# database setup
-1. Create 'demo' table
-2. Create 'bryllyant' schema in 'demo' table
-3. Run script below to create/recreate tables
-```
-
+\connect demo;
 DROP TABLE IF EXISTS bryllyant.answers;
 DROP TABLE IF EXISTS bryllyant.pollrequestsstatus;
 DROP TABLE IF EXISTS bryllyant.pollrequests;
@@ -71,4 +64,3 @@ CREATE TABLE bryllyant.answers(
    answer         BOOLEAN NOT NULL,
    PRIMARY KEY    (pollid, requestid, userid, questionid)
 );
-```
