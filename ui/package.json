@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host=0.0.0.0 --disable-host-check",
+    "uilocal": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
