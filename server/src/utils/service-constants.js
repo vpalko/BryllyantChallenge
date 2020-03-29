@@ -1,6 +1,6 @@
 module.exports = {
     NODE_ENV: "test",
-    DB: "MONGO",
+    DB: "MONGO", // either "MONGO" or "POSTGRES"
     BAD_REQUEST: "BAD REQUEST",
     POSTGRES: {
         USER: "postgres",

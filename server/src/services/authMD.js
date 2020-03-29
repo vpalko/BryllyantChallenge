@@ -1,4 +1,5 @@
 const UserProfile = require('../utils/MongoModels/user');
+const ObjectId = require('mongodb').ObjectID;
 const SERVICE_CONSTANTS = require('../utils/service-constants');
 
 const bcrypt = require('bcrypt');
@@ -10,29 +11,49 @@ logger.level = 'debug';
 
 class AuthMD {
     getuser(req, res) {
-        let query;
         if (req.params.id) {
-            query = `SELECT id, email, firstname, lastname, phone, isadmin  FROM bryllyant.userprofile WHERE id='${req.params.id}'`;
+            UserProfile.findOne({ '_id': ObjectId(req.params.id) }, function (err, response) {
+                if (err) {
+                    logger.error({ err });
+                    return res.status(400).send(err);
+                } else if (!response) {
+                    return res.status(404).end();
+                } else {
+                    let userData = {
+                        id: response._id,
+                        email: response.email,
+                        phone: response.phone,
+                        firstname: response.firstname,
+                        lastname: response.lastname,
+                        isadmin: response.isadmin
+                    }
+                    return res.status(200).send([userData]);
+                }
+            });
         } else {
-            query = `SELECT * FROM bryllyant.userprofile`;
+            UserProfile.find({ }, function (err, response) {
+                if (err) {
+                    logger.error({ err });
+                    return res.status(400).send(err);
+                } else if (!response) {
+                    return res.status(404).end();
+                } else {
+                    let users = response.map((user) => {
+                        return  {
+                                id: user._id,
+                                email: user.email,
+                                pwd: user.pwd,
+                                phone: user.phone,
+                                firstname: user.firstname,
+                                lastname: user.lastname,
+                                isadmin: user.isadmin
+                            }
+                      });
+
+                    return res.status(200).send(users);
+                }
+            });
         }
-
-        PostgresHelper.query(query, (err, response) => {
-            logger.debug({ context: { query } }, 'Dumping query');
-            if (err) {
-                logger.error({ err })
-                // if (err.code && err.code === POSTGRES_ERRORS.FOREIGN_KEY_VIOLATION) {
-                //     return res.status(400).send({ error: SERVICE_CONSTANTS.POLL.INVALIDAUTHORID });
-                // } else {
-                return res.status(400).send(err);
-                // }
-            } else if (!response.rowCount || response.rowCount === 0) {
-                return res.status(404).end();
-            } else {
-                return res.status(200).send(response.rows);
-            }
-        });
-
     }
 
     updateuser(req, res) {
@@ -48,25 +69,32 @@ class AuthMD {
             return res.status(400).send({ msg: SERVICE_CONSTANTS.BAD_REQUEST });
         }
 
-        let data = email ? `email='${email}', ` : '';
-        data += (firstname ? `firstname='${firstname}', ` : '');
-        data += (lastname ? `lastname='${lastname}', ` : '');
-        data += (phone ? `phone='${phone}', ` : '');
-        data += (isadmin ? `isadmin=${isadmin}, ` : '');
-        data = data.substring(0, data.length - 2);
+        let data = {}
+        if (email)
+            data['email'] = email;
+        if (firstname)
+            data['firstname'] = firstname;
+        if (lastname)
+            data['lastname'] = lastname;
+        if (phone)
+            data['phone'] = phone;
+        if (isadmin)
+            data['isadmin'] = isadmin;
 
-        let query = `UPDATE bryllyant.userprofile SET ${data} WHERE id=${id}`;
-
-        PostgresHelper.query(query, (err, response) => {
-            logger.debug({ context: { query } }, 'Dumping query');
-            if (err) {
-                logger.error({ err })
-                return res.status(400).send(err);
-            } else {
-                // logger.debug(response.rows[0]);
-                return res.status(200).send({ msg: SERVICE_CONSTANTS.USER.UPDATED });
-            }
-        });
+        UserProfile.findOneAndUpdate(
+            { '_id': ObjectId(req.body.id) },
+            data,
+            function (err, response) {
+                if (err) {
+                    logger.error({ err });
+                    return res.status(400).send(err);
+                } else if (!response) {
+                    return res.status(404).send({ msg: SERVICE_CONSTANTS.USER.UNABLE_TO_FIND });
+                } else {
+                    // logger.debug(response.rows[0]);
+                    return res.status(200).send({ msg: SERVICE_CONSTANTS.USER.UPDATED });
+                }
+            });
     }
 
     deleteuser(req, res) {
@@ -77,13 +105,12 @@ class AuthMD {
             return res.status(400).send({ msg: SERVICE_CONSTANTS.BAD_REQUEST });
         }
 
-        let query = `DELETE FROM bryllyant.userprofile WHERE id=${id}`;
-
-        PostgresHelper.query(query, (err, response) => {
-            logger.debug({ context: { query } }, 'Dumping query');
+        UserProfile.findOneAndDelete({ '_id': ObjectId(req.body.id) }, function (err, response) {
             if (err) {
-                logger.error({})
+                logger.error({ err });
                 return res.status(400).send(err);
+            } else if (!response) {
+                return res.status(404).send({ msg: SERVICE_CONSTANTS.USER.UNABLE_TO_FIND });
             } else {
                 // logger.debug(response.rows[0]);
                 return res.status(200).send({ msg: SERVICE_CONSTANTS.USER.DELETED });
@@ -131,13 +158,12 @@ class AuthMD {
                     } else {
                         return res.status(200).send({
                             msg: SERVICE_CONSTANTS.USER.CREATED, user: {
-                                    id: results._id,
-                                    email: results.email,
-                                    firstname: results.firstname,
-                                    lastname: results.lastname,
-                                    phone: results.phone,
-                                    pwd: results.pwd,
-                                    isadmin: results.isadmin
+                                id: results._id,
+                                email: results.email,
+                                firstname: results.firstname,
+                                lastname: results.lastname,
+                                phone: results.phone,
+                                isadmin: results.isadmin
                             }
                         });
                     }
@@ -152,28 +178,25 @@ class AuthMD {
         }
 
         if (req.body.email) {
-            let query = `SELECT * FROM bryllyant.userprofile WHERE email='${req.body.email}'`;
-
-            PostgresHelper.query(query, (err, response) => {
-                logger.debug({ context: { query } }, 'Dumping query');
+            UserProfile.findOne({ 'email': req.body.email }, function (err, response) {
                 if (err) {
-                    logger.error({ err: err })
+                    logger.error({ err });
                     return res.status(400).send(err);
-                } else if (!response.rowCount || response.rowCount === 0) {
+                } else if (!response) {
                     return res.send(404);
                 } else {
                     // check if the password is correct
-                    bcrypt.compare(req.body.pwd, response.rows[0].pwd).then(function (result) {
+                    bcrypt.compare(req.body.pwd, response.pwd).then(function (result) {
                         if (!result) {
                             return res.status(403).send({ msg: SERVICE_CONSTANTS.USER.INVALID_CREDENTIALS });
                         } else {
                             let userData = {
-                                id: response.rows[0].id,
-                                email: response.rows[0].email,
-                                phone: response.rows[0].phone,
-                                firstname: response.rows[0].firstname,
-                                lastname: response.rows[0].lastname,
-                                isadmin: response.rows[0].isadmin
+                                id: response._id,
+                                email: response.email,
+                                phone: response.phone,
+                                firstname: response.firstname,
+                                lastname: response.lastname,
+                                isadmin: response.isadmin
                             }
                             jwt.sign(userData, SERVICE_CONSTANTS.AUTH.APP_SECRET, { expiresIn: SERVICE_CONSTANTS.AUTH.TOKEN_EXPIRES_IN }, (err, token) => {
                                 userData.token = token;

@@ -9,13 +9,19 @@ const dbPath = `mongodb://${SERVICE_CONSTANTS.MONGO.USER}:${SERVICE_CONSTANTS.MO
 
 mongoose.connect(dbPath, {
     useNewUrlParser: true,
-});
-const db = mongoose.connection;
-db.on("error", () => {
-    logger.error("> error occurred from the database");
-});
-db.once("open", () => {
-    logger.info("> successfully opened the database");
+    useUnifiedTopology: true
+})
+.then(() => {
+    const db = mongoose.connection;
+    db.on("error", () => {
+        logger.error("> error occurred from the database");
+    });
+    db.once("open", () => {
+        logger.info("> successfully opened the database");
+    });
+})
+.catch(err => { // mongoose connection error will be handled here
+    logger.error('MongoDB server not available:', err.stack);
 });
 
 module.exports = mongoose;

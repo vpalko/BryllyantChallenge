@@ -21,7 +21,7 @@ class AuthPG {
         PostgresHelper.query(query, (err, response) => {
             logger.debug({ context: { query } }, 'Dumping query');
             if (err) {
-                logger.error({ err })
+                logger.error({ err });
                 // if (err.code && err.code === POSTGRES_ERRORS.FOREIGN_KEY_VIOLATION) {
                 //     return res.status(400).send({ error: SERVICE_CONSTANTS.POLL.INVALIDAUTHORID });
                 // } else {
@@ -61,7 +61,7 @@ class AuthPG {
         PostgresHelper.query(query, (err, response) => {
             logger.debug({ context: { query } }, 'Dumping query');
             if (err) {
-                logger.error({ err })
+                logger.error({ err });
                 return res.status(400).send(err);
             } else {
                 // logger.debug(response.rows[0]);
@@ -83,7 +83,7 @@ class AuthPG {
         PostgresHelper.query(query, (err, response) => {
             logger.debug({ context: { query } }, 'Dumping query');
             if (err) {
-                logger.error({})
+                logger.error({ err });
                 return res.status(400).send(err);
             } else {
                 // logger.debug(response.rows[0]);
@@ -107,7 +107,7 @@ class AuthPG {
 
         bcrypt.genSalt(10, function (err, salt) {
             if (err) {
-                logger.error(err);
+                logger.error({ err });
                 return res.status(400).send({ error });
             }
 
@@ -118,7 +118,7 @@ class AuthPG {
                 PostgresHelper.queryData(query, data, (err, response) => {
                     logger.debug({ context: { query } }, 'Dumping query');
                     if (err) {
-                        logger.error( { err, data } );
+                        logger.error({ err, data });
                         if (err.code && err.code === POSTGRES_ERRORS.UNIQUE_VIOLATION) {
                             return res.status(400).send({ error: SERVICE_CONSTANTS.USER.EMAIL_ALREADY_EXISTS });
                         } else {
@@ -127,11 +127,11 @@ class AuthPG {
                     } else {
 
                         query = `SELECT id, email, firstname, lastname, phone, isadmin  FROM bryllyant.userprofile WHERE email='${email}'`;
-            
+
                         PostgresHelper.query(query, (err, response) => {
                             logger.debug({ context: { query } }, 'Dumping query');
                             if (err) {
-                                logger.error({ err })
+                                logger.error({ err });
                                 return res.status(400).send({ error: SERVICE_CONSTANTS.USER.UNABLE_TO_FIND });
                             } else if (!response.rowCount || response.rowCount === 0) {
                                 return res.status(400).send({ error: SERVICE_CONSTANTS.USER.UNABLE_TO_FIND });
@@ -156,7 +156,7 @@ class AuthPG {
             PostgresHelper.query(query, (err, response) => {
                 logger.debug({ context: { query } }, 'Dumping query');
                 if (err) {
-                    logger.error({ err: err })
+                    logger.error({ err });
                     return res.status(400).send(err);
                 } else if (!response.rowCount || response.rowCount === 0) {
                     return res.send(404);

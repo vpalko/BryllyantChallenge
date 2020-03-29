@@ -42,8 +42,8 @@ const schema = {
 };
 
 const collectionName = "userprofile"; // Name of the collection of documents
-const userSchema = mongoose.Schema(schema);
-const UserProfile = mongoose.model(collectionName, userSchema);
+const UserSchema = mongoose.Schema(schema);
+const UserProfile = mongoose.model(collectionName, UserSchema);
 
 function validateEmail(email) {
     var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
