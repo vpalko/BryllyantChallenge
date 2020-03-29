@@ -1,5 +1,6 @@
 module.exports = {
     NODE_ENV: "test",
+    DB: "MONGO",
     BAD_REQUEST: "BAD REQUEST",
     POSTGRES: {
         USER: "postgres",
@@ -7,6 +8,13 @@ module.exports = {
         DATABASE: "demo",
         PASSWORD: "123",
         PORT: 5432,
+    },
+    MONGO: {
+        USER: "mongoadmin",
+        HOST: "localhost",
+        DATABASE: "demo",
+        PASSWORD: "123",
+        PORT: 27017,
     },
     AUTH: {
         APP_SECRET: "vpsecretkey",

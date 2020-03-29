@@ -1,11 +1,16 @@
 const { Pool } = require('pg')
 const format = require('pg-format');
 const SERVICE_CONSTANTS = require('./service-constants');
+var log4js = require('log4js');
+var logger = log4js.getLogger();
+logger.level = 'debug';
 
 class PostgresHelper {
     init() {
         // initiate
-        this.createPostgresClient()
+        if(SERVICE_CONSTANTS.DB === "POSTGRES") {
+            this.createPostgresClient();
+        }
     }
 
     // Get Postgres Client for local / cloud
@@ -17,7 +22,9 @@ class PostgresHelper {
                 database: SERVICE_CONSTANTS.POSTGRES.DATABASE,
                 password: SERVICE_CONSTANTS.POSTGRES.PASSWORD,
                 port: SERVICE_CONSTANTS.POSTGRES.PORT,
-            })
+            });
+
+            logger.debug("Postgres client pool created");
         }
     }
 
