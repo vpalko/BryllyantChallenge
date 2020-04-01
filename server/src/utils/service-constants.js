@@ -11,10 +11,10 @@ module.exports = {
     },
     MONGO: {
         USER: "mongoadmin",
-        HOST: "localhost",
+        HOST: "127.0.0.1",
         DATABASE: "demo",
         PASSWORD: "123",
-        PORT: 27017,
+        PORT: 27017
     },
     AUTH: {
         APP_SECRET: "vpsecretkey",
