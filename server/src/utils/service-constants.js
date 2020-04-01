@@ -35,7 +35,8 @@ module.exports = {
         DELETED: "Poll successfully deleted",
         INVALID: "Invalid poll id",
         INVALIDAUTHORID: "Invalid author id",
-        UNABLE_TO_SEND_INVITATION: "Unable to send poll invitation"
+        UNABLE_TO_SEND_INVITATION: "Unable to send poll invitation",
+        UNABLE_TO_FIND: "Unable to find poll"
     },
     POLL_REQUEST: {
         STATUS_UPDATED: "Status successfully updated",
@@ -44,7 +45,8 @@ module.exports = {
         CREATED: "Question successfully created",
         UPDATED: "Question successfully updated",
         DELETED: "Question successfully deleted",
-        INVALID: "Invalid question id"
+        INVALID: "Invalid question id",
+        UNABLE_TO_FIND: "Unable to find user"
     },
     ANSWER: {
         SAVED: "User answers successfully saved",

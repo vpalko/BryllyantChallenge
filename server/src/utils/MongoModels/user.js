@@ -6,7 +6,6 @@ const logger = log4js.getLogger();
 logger.level = 'debug';
 
 const schema = {
-    // _id: mongoose.Schema.Types.ObjectId,
     email: {
         type: String,
         trim: true,

@@ -31,7 +31,7 @@ class AuthMD {
                 }
             });
         } else {
-            UserProfile.find({ }, function (err, response) {
+            UserProfile.find({}, function (err, response) {
                 if (err) {
                     logger.error({ err });
                     return res.status(400).send(err);
@@ -39,16 +39,16 @@ class AuthMD {
                     return res.status(404).end();
                 } else {
                     let users = response.map((user) => {
-                        return  {
-                                id: user._id,
-                                email: user.email,
-                                pwd: user.pwd,
-                                phone: user.phone,
-                                firstname: user.firstname,
-                                lastname: user.lastname,
-                                isadmin: user.isadmin
-                            }
-                      });
+                        return {
+                            id: user._id,
+                            email: user.email,
+                            pwd: user.pwd,
+                            phone: user.phone,
+                            firstname: user.firstname,
+                            lastname: user.lastname,
+                            isadmin: user.isadmin
+                        }
+                    });
 
                     return res.status(200).send(users);
                 }
@@ -105,7 +105,7 @@ class AuthMD {
             return res.status(400).send({ msg: SERVICE_CONSTANTS.BAD_REQUEST });
         }
 
-        UserProfile.findOneAndDelete({ '_id': ObjectId(req.body.id) }, function (err, response) {
+        UserProfile.findOneAndDelete({ '_id': ObjectId(id) }, function (err, response) {
             if (err) {
                 logger.error({ err });
                 return res.status(400).send(err);

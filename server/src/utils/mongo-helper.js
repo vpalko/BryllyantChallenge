@@ -9,7 +9,8 @@ const dbPath = `mongodb://${SERVICE_CONSTANTS.MONGO.USER}:${SERVICE_CONSTANTS.MO
 
 mongoose.connect(dbPath, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: false
 })
 .then(() => {
     const db = mongoose.connection;
