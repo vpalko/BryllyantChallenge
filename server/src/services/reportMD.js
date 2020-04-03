@@ -67,6 +67,20 @@ class Report {
     }
 
     getRequestStatusCount(pollid) {
+/*
+
+	
+db.pollrequestsstatuses.aggregate([
+    { "$group": { _id: { id: "$id", status: "$status" }, count: { $sum: 1 } } },
+    { $lookup: { from: "pollrequests", localField: "_id.id", foreignField: "_id", as: "details" } },
+    { $project: { count: "$count", details: { $arrayElemAt: ['$details', 0] } } },
+    { $match: { "details.pollid": ObjectId("5e874dd9d273a2f9c60abf37") } }
+])
+
+*/
+
+
+
         return new Promise((resolve, reject) => {
             let query = `SELECT id as requestid, status, count(*) FROM bryllyant.pollrequestsstatus `;
             query += `WHERE id IN (SELECT id FROM bryllyant.pollrequests WHERE pollid=${pollid}) `
