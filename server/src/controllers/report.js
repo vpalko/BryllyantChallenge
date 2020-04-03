@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../services/auth');
 const reportPG = require('../services/reportPG');
+const reportMD = require('../services/reportMD');
 const SERVICE_CONSTANTS = require('../utils/service-constants');
 
 var log4js = require('log4js');

@@ -13,9 +13,9 @@ class AuthPG {
     getuser(req, res) {
         let query;
         if (req.params.id) {
-            query = `SELECT id, email, firstname, lastname, phone, isadmin  FROM bryllyant.userprofile WHERE id='${req.params.id}'`;
+            query = `SELECT id, email, firstname, lastname, phone, isadmin  FROM bryllyant.userprofiles WHERE id='${req.params.id}'`;
         } else {
-            query = `SELECT * FROM bryllyant.userprofile`;
+            query = `SELECT * FROM bryllyant.userprofiles`;
         }
 
         PostgresHelper.query(query, (err, response) => {
@@ -56,7 +56,7 @@ class AuthPG {
         data += (isadmin ? `isadmin=${isadmin}, ` : '');
         data = data.substring(0, data.length - 2);
 
-        let query = `UPDATE bryllyant.userprofile SET ${data} WHERE id=${id}`;
+        let query = `UPDATE bryllyant.userprofiles SET ${data} WHERE id=${id}`;
 
         PostgresHelper.query(query, (err, response) => {
             logger.debug({ context: { query } }, 'Dumping query');
@@ -78,7 +78,7 @@ class AuthPG {
             return res.status(400).send({ msg: SERVICE_CONSTANTS.BAD_REQUEST });
         }
 
-        let query = `DELETE FROM bryllyant.userprofile WHERE id=${id}`;
+        let query = `DELETE FROM bryllyant.userprofiles WHERE id=${id}`;
 
         PostgresHelper.query(query, (err, response) => {
             logger.debug({ context: { query } }, 'Dumping query');
@@ -112,7 +112,7 @@ class AuthPG {
             }
 
             bcrypt.hash(pwd, salt, function (err, hash) {
-                let query = 'INSERT INTO bryllyant.userprofile(email, phone, firstname, lastname, pwd, isadmin) VALUES($1, $2, $3, $4, $5, $6)';
+                let query = 'INSERT INTO bryllyant.userprofiles(email, phone, firstname, lastname, pwd, isadmin) VALUES($1, $2, $3, $4, $5, $6)';
                 let data = [email, phone, firstname, lastname, hash, isadmin];
 
                 PostgresHelper.queryData(query, data, (err, response) => {
@@ -126,7 +126,7 @@ class AuthPG {
                         }
                     } else {
 
-                        query = `SELECT id, email, firstname, lastname, phone, isadmin  FROM bryllyant.userprofile WHERE email='${email}'`;
+                        query = `SELECT id, email, firstname, lastname, phone, isadmin  FROM bryllyant.userprofiles WHERE email='${email}'`;
 
                         PostgresHelper.query(query, (err, response) => {
                             logger.debug({ context: { query } }, 'Dumping query');
@@ -151,7 +151,7 @@ class AuthPG {
         }
 
         if (req.body.email) {
-            let query = `SELECT * FROM bryllyant.userprofile WHERE email='${req.body.email}'`;
+            let query = `SELECT * FROM bryllyant.userprofiles WHERE email='${req.body.email}'`;
 
             PostgresHelper.query(query, (err, response) => {
                 logger.debug({ context: { query } }, 'Dumping query');

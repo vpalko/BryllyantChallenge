@@ -13,6 +13,7 @@ mongoose.connect(dbPath, {
     useFindAndModify: false
 })
 .then(() => {
+    logger.info(`*** connected to MongoDB: ${dbPath} ***`);
     const db = mongoose.connection;
     db.on("error", () => {
         logger.error("> error occurred from the database");

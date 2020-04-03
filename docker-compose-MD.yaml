@@ -1,0 +1,60 @@
+version: '3.7'
+
+services:
+  appui:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    image: bryllyantui
+    container_name: bryllyantui
+    restart: unless-stopped
+    ports:
+      - "4200:4200"
+    depends_on:
+      - express
+
+  express:
+    networks:
+      - public
+      - private
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    image: bryllyantserver
+    container_name: bryllyantserver
+    restart: unless-stopped
+    ports:
+      - "3456:3456"
+    depends_on:
+      - mongo
+
+  mongo:
+    networks:
+      - public
+      - private
+    container_name: mongo
+    image: mongo
+    build:
+      context: ./mongoDocker
+      dockerfile: db.Dockerfile
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 123
+      MONGO_INITDB_DATABASE: demo
+      MONGO_INITDB_USERNAME: mongoadmin
+      MONGO_INITDB_PASSWORD: 123
+    restart: unless-stopped
+    volumes:
+      - /mongodata:/data/db
+  
+networks:
+    private:
+        driver: bridge
+    public:
+        driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local

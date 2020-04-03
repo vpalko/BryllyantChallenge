@@ -40,7 +40,7 @@ const schema = {
     }
 };
 
-const collectionName = "userprofile"; // Name of the collection of documents
+const collectionName = "userprofiles"; // Name of the collection of documents
 const UserSchema = mongoose.Schema(schema);
 const UserProfile = mongoose.model(collectionName, UserSchema);
 

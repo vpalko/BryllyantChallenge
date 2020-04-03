@@ -7,6 +7,11 @@ COPY ./angular.json /usr/app/
 COPY ./tsconfig.json /usr/app/
 COPY ./tslint.json /usr/app/
 
+# production
+# RUN npm install --production && npm cache clean --force
+# RUN npm run build
+
+# dev
 RUN npm install
 RUN npm install -g @angular/cli
 

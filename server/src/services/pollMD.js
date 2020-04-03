@@ -159,7 +159,7 @@ class Poll {
             return res.status(400).send({ msg: SERVICE_CONSTANTS.BAD_REQUEST });
         }
 
-        let filter = { '_id': ObjectId(prid), 'userid': ObjectId(userid) };
+        let filter = { 'id': ObjectId(prid), 'userid': ObjectId(userid) };
 
         if (force === false) {
             // update only if new status greater than current

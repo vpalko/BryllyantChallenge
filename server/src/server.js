@@ -43,5 +43,5 @@ app.use('/report', reportController);
 
 var port = 3456;
 app.listen(port, function(){
-    console.log("Server listening on port: " + port);
+    logger.info("Server listening on port: " + port);
 });

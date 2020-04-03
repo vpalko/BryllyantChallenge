@@ -4,7 +4,7 @@ WORKDIR /usr/app
 
 COPY ./package*.json /usr/app/
 
-RUN npm install
+RUN npm install --production && npm cache clean --force
 
 # Add source code
 COPY src /usr/app/src

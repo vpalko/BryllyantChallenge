@@ -10,7 +10,7 @@ logger.level = 'debug';
 class Poll {
     getpoll(req, res) {
         let query =
-            `SELECT p.*, concat_ws(', ', u.lastname, u.firstname) AS authorname FROM bryllyant.poll as p LEFT OUTER JOIN bryllyant.userprofile as u ON u.id = p.authorid `; //keep white space after each string
+            `SELECT p.*, concat_ws(', ', u.lastname, u.firstname) AS authorname FROM bryllyant.poll as p LEFT OUTER JOIN bryllyant.userprofiles as u ON u.id = p.authorid `; //keep white space after each string
 
         if (req.params.id) {
             query += `WHERE p.id='${req.params.id}'`;
@@ -37,7 +37,7 @@ class Poll {
 
     getauthorpoll(authorid) {
         return new Promise((resolve, reject) => {
-            let query = `SELECT p.*, concat_ws(', ', u.lastname, u.firstname) AS authorname FROM bryllyant.poll as p LEFT OUTER JOIN bryllyant.userprofile as u ON u.id = p.authorid WHERE p.authorid='${authorid}' ORDER BY id DESC FETCH FIRST 1 ROW ONLY`;
+            let query = `SELECT p.*, concat_ws(', ', u.lastname, u.firstname) AS authorname FROM bryllyant.poll as p LEFT OUTER JOIN bryllyant.userprofiles as u ON u.id = p.authorid WHERE p.authorid='${authorid}' ORDER BY id DESC FETCH FIRST 1 ROW ONLY`;
 
             PostgresHelper.query(query, (err, response) => {
                 logger.debug({ context: { query } }, 'Dumping query');

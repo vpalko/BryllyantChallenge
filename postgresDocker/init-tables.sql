@@ -4,10 +4,10 @@ DROP TABLE IF EXISTS bryllyant.pollrequestsstatus;
 DROP TABLE IF EXISTS bryllyant.pollrequests;
 DROP TABLE IF EXISTS bryllyant.questions;
 DROP TABLE IF EXISTS bryllyant.poll;
-DROP TABLE IF EXISTS bryllyant.userprofile;
+DROP TABLE IF EXISTS bryllyant.userprofiles;
 
 
-CREATE TABLE bryllyant.userprofile(
+CREATE TABLE bryllyant.userprofiles(
    id             SERIAL PRIMARY KEY,
    email          VARCHAR(125),
    pwd            TEXT NOT NULL,
@@ -18,14 +18,14 @@ CREATE TABLE bryllyant.userprofile(
    UNIQUE(email)
 );
 
-INSERT INTO bryllyant.userprofile (email, phone, firstname, lastname, isadmin, pwd) VALUES ('admin@example.com', '9195551234', 'Admin', 'Bryllyant', true, '$2b$10$FLOIG06GwRC91ftk2EZRi.hSCSfFaLEI08.Ohi2YQBjhsAiXfgVWC');
-INSERT INTO bryllyant.userprofile (email, phone, firstname, lastname, isadmin, pwd) VALUES ('john@example.com', '2155551234', 'John', 'Smith', false, '$2b$10$FLOIG06GwRC91ftk2EZRi.hSCSfFaLEI08.Ohi2YQBjhsAiXfgVWC');
+INSERT INTO bryllyant.userprofiles (email, phone, firstname, lastname, isadmin, pwd) VALUES ('admin@example.com', '9195551234', 'Admin', 'Bryllyant', true, '$2b$10$FLOIG06GwRC91ftk2EZRi.hSCSfFaLEI08.Ohi2YQBjhsAiXfgVWC');
+INSERT INTO bryllyant.userprofiles (email, phone, firstname, lastname, isadmin, pwd) VALUES ('john@example.com', '2155551234', 'John', 'Smith', false, '$2b$10$FLOIG06GwRC91ftk2EZRi.hSCSfFaLEI08.Ohi2YQBjhsAiXfgVWC');
 
 CREATE TABLE bryllyant.poll(
    id             SERIAL PRIMARY KEY,
    name           VARCHAR(225) NOT NULL,
    description    TEXT,
-   authorid       INTEGER NOT NULL REFERENCES bryllyant.userprofile (id)
+   authorid       INTEGER NOT NULL REFERENCES bryllyant.userprofiles (id)
 );
 
 INSERT INTO bryllyant.poll (name, description, authorid) VALUES ('poll one', 'test poll one', 1);
@@ -34,13 +34,13 @@ INSERT INTO bryllyant.poll (name, description, authorid) VALUES ('poll two', 'te
 CREATE TABLE bryllyant.pollrequests(
    id             SERIAL PRIMARY KEY,
    pollid         INTEGER NOT NULL REFERENCES bryllyant.poll (id),
-   sentby         INTEGER NOT NULL REFERENCES bryllyant.userprofile (id),
+   sentby         INTEGER NOT NULL REFERENCES bryllyant.userprofiles (id),
    senton         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE bryllyant.pollrequestsstatus(
    id             INTEGER NOT NULL REFERENCES bryllyant.pollrequests (id),
-   userid         INTEGER NOT NULL REFERENCES bryllyant.userprofile (id),
+   userid         INTEGER NOT NULL REFERENCES bryllyant.userprofiles (id),
    status         INTEGER NOT NULL DEFAULT 0,
    updatedon      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
    PRIMARY KEY    (id, userid)
@@ -60,7 +60,7 @@ CREATE TABLE bryllyant.answers(
    pollid         INTEGER NOT NULL REFERENCES bryllyant.poll (id),
    requestid      INTEGER NOT NULL REFERENCES bryllyant.pollrequests (id),
    questionid     INTEGER NOT NULL REFERENCES bryllyant.questions (id),
-   userid         INTEGER NOT NULL REFERENCES bryllyant.userprofile (id),
+   userid         INTEGER NOT NULL REFERENCES bryllyant.userprofiles (id),
    answer         BOOLEAN NOT NULL,
    PRIMARY KEY    (pollid, requestid, userid, questionid)
 );

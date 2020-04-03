@@ -7,11 +7,11 @@ module.exports = {
         HOST: "host.docker.internal",
         DATABASE: "demo",
         PASSWORD: "123",
-        PORT: 5432,
+        PORT: 5432
     },
     MONGO: {
         USER: "mongoadmin",
-        HOST: "127.0.0.1",
+        HOST: "mongo",
         DATABASE: "demo",
         PASSWORD: "123",
         PORT: 27017
