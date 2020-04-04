@@ -7,23 +7,25 @@ logger.level = 'debug';
 
 const dbPath = `mongodb://${SERVICE_CONSTANTS.MONGO.USER}:${SERVICE_CONSTANTS.MONGO.PASSWORD}@${SERVICE_CONSTANTS.MONGO.HOST}:${SERVICE_CONSTANTS.MONGO.PORT}/${SERVICE_CONSTANTS.MONGO.DATABASE}`;
 
-mongoose.connect(dbPath, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false
-})
-.then(() => {
-    logger.info(`*** connected to MongoDB: ${dbPath} ***`);
-    const db = mongoose.connection;
-    db.on("error", () => {
-        logger.error("> error occurred from the database");
-    });
-    db.once("open", () => {
-        logger.info("> successfully opened the database");
-    });
-})
-.catch(err => { // mongoose connection error will be handled here
-    logger.error('MongoDB server not available:', err.stack);
-});
+if (SERVICE_CONSTANTS.DB === "MONGO") {
+    mongoose.connect(dbPath, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useFindAndModify: false
+    })
+        .then(() => {
+            logger.info(`*** connected to MongoDB: ${dbPath} ***`);
+            const db = mongoose.connection;
+            db.on("error", () => {
+                logger.error("> error occurred from the database");
+            });
+            db.once("open", () => {
+                logger.info("> successfully opened the database");
+            });
+        })
+        .catch(err => { // mongoose connection error will be handled here
+            logger.error('MongoDB server not available:', err.stack);
+        });
+}
 
 module.exports = mongoose;

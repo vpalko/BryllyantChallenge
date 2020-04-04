@@ -4,14 +4,14 @@ module.exports = {
     BAD_REQUEST: "BAD REQUEST",
     POSTGRES: {
         USER: "postgres",
-        HOST: "host.docker.internal",
+        HOST: "localhost", //host.docker.internal
         DATABASE: "demo",
         PASSWORD: "123",
         PORT: 5432
     },
     MONGO: {
         USER: "mongoadmin",
-        HOST: "mongo",
+        HOST: "localhost", //mongo
         DATABASE: "demo",
         PASSWORD: "123",
         PORT: 27017

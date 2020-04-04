@@ -1,5 +1,9 @@
-const PostgresHelper = require('../utils/postgres-helper');
-const POSTGRES_ERRORS = require('pg-error-constants');
+
+const ObjectId = require('mongodb').ObjectID;
+const UserProfile = require('../utils/MongoModels/user');
+const PollProfile = require('../utils/MongoModels/poll');
+const PollRequest = require('../utils/MongoModels/pollrequest');
+const PollRequestStatus = require('../utils/MongoModels/pollrequestsstatus');
 const SERVICE_CONSTANTS = require('../utils/service-constants');
 const lodash = require('lodash');
 const moment = require('moment');
@@ -17,86 +21,75 @@ class Report {
             return res.status(400).send({ msg: SERVICE_CONSTANTS.BAD_REQUEST });
         }
 
-        let query;
+        let match = {}
 
-        if (reportid === 1) {
-            //poll request info with status count
-            query = `SELECT pr.id as requestid, pr.senton, concat_ws(', ', u.lastname, u.firstname) AS requestorname `;
-            query += `FROM bryllyant.pollrequests as pr `;
-            query += `LEFT OUTER JOIN bryllyant.userprofiles as u ON (pr.sentby = u.id) `;
-            query += `WHERE pr.pollid=${pollid} `;
-            query += `ORDER BY pr.senton DESC`;
-        }
-
-        PostgresHelper.query(query, (err, response) => {
-            logger.debug({ context: { query } }, 'Dumping query');
+        match = { pollid: ObjectId(pollid) }
+        PollRequest.aggregate([
+            { $match: match },
+            {
+                $lookup:
+                {
+                    from: "userprofiles",
+                    localField: "sentby",
+                    foreignField: "_id",
+                    as: "author_info"
+                },
+            },
+            { $project: { requestid: "$_id", senton: "$senton", author_info: "$author_info" } }
+        ], function (err, data) {
             if (err) {
                 logger.error({ err });
-                // if (err.code && err.code === POSTGRES_ERRORS.FOREIGN_KEY_VIOLATION) {
-                //     return res.status(400).send({ error: SERVICE_CONSTANTS.POLL.INVALIDAUTHORID });
-                // } else {
                 return res.status(400).send(err);
-                // }
-            // } else if (!response.rowCount || response.rowCount === 0) {
-            //     return res.status(404).end();
+            } else if (!data) {
+                return res.status(404).end();
             } else {
-                let pollRequestData = response.rows.map(x => {
-                    x.senton = moment(x.senton).format("MMMM Do YYYY, hh:mm a");
-                    return x;
-                }
-                );
-
-                this.getRequestStatusCount(pollid)
-                .then((data)=>{
-                    for (var index = 0; index < pollRequestData.length; index++) {
-                        let rs = lodash.filter(data, function(item) {
-                            return item.requestid === pollRequestData[index].requestid;
-                        });
-
-                        pollRequestData[index]['statuscount'] = rs.map(({requestid, ...rest}) => rest);
+                let pollRequestData = data.map((poll) => {
+                    let authorName = poll.author_info ? (poll.author_info[0] ? poll.author_info[0].lastname + ', ' + poll.author_info[0].firstname : 'N/A') : 'N/A';
+                    return {
+                        requestid: poll.requestid,
+                        senton: moment(poll.senton).format("MMMM Do YYYY, hh:mm a"),
+                        requestorname: authorName
                     }
+                });
 
-                    return res.status(200).send(response.rows);
-                })
-                .catch((err)=>{
-                    logger.error({ err });
-                    return res.status(400).send(err);
+                PollRequestStatus.aggregate([
+                    { "$group": { _id: { id: "$id", status: "$status" }, count: { $sum: 1 } } },
+                    { $lookup: { from: "pollrequests", localField: "_id.id", foreignField: "_id", as: "details" } },
+                    { $project: { count: "$count", details: { $arrayElemAt: ['$details', 0] } } },
+                    { $match: { "details.pollid": ObjectId(pollid) } }
+                ], function (err, data) {
+                    if (err) {
+                        logger.error({ err });
+                        return res.status(400).send(err);
+                    } else {
+                        for (var index = 0; index < pollRequestData.length; index++) {
+                            let rs = lodash.filter(data, function (item) {
+                                return item._id['id'].toString() === pollRequestData[index].requestid.toString();
+                            });
+
+                            pollRequestData[index]['statuscount'] = rs.map(({ requestid, ...rest }) => rest);
+                        }
+
+                        logger.debug("###############", JSON.stringify(pollRequestData));
+                        return res.status(200).send(response.rows);
+                    }
                 });
             }
         });
     }
 
-    getRequestStatusCount(pollid) {
-/*
 
-	
-db.pollrequestsstatuses.aggregate([
-    { "$group": { _id: { id: "$id", status: "$status" }, count: { $sum: 1 } } },
-    { $lookup: { from: "pollrequests", localField: "_id.id", foreignField: "_id", as: "details" } },
-    { $project: { count: "$count", details: { $arrayElemAt: ['$details', 0] } } },
-    { $match: { "details.pollid": ObjectId("5e874dd9d273a2f9c60abf37") } }
-])
-
-*/
-
-
-
-        return new Promise((resolve, reject) => {
-            let query = `SELECT id as requestid, status, count(*) FROM bryllyant.pollrequestsstatus `;
-            query += `WHERE id IN (SELECT id FROM bryllyant.pollrequests WHERE pollid=${pollid}) `
-            query += `GROUP BY id, status ORDER BY id, status`;
-
-            PostgresHelper.query(query, (err, response) => {
-                logger.debug({ context: { query } }, 'Dumping query');
-                // if (err) {
-                //     logger.error({ err });
-                //     reject(err);
-                // } else {
-                    resolve(response.rows);
-                // }
-            });
-        });
-    }
+    /*
+    
+    	
+    db.pollrequestsstatuses.aggregate([
+        { "$group": { _id: { id: "$id", status: "$status" }, count: { $sum: 1 } } },
+        { $lookup: { from: "pollrequests", localField: "_id.id", foreignField: "_id", as: "details" } },
+        { $project: { count: "$count", details: { $arrayElemAt: ['$details', 0] } } },
+        { $match: { "details.pollid": ObjectId("5e874dd9d273a2f9c60abf37") } }
+    ])
+    
+    */
 
 }
 
