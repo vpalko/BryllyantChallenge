@@ -12,6 +12,6 @@ Run `npm uilocal` for frontend. Navigate to `http://localhost:4200/`.
 
 ## Docker
 ```
-docker-compose up
+docker-compose -f docker-compose-MD.yaml up (or PG.yaml file for Postgres)
 docker-compose logs -f
 ```

@@ -1,0 +1,6 @@
+{
+  "typescript.tsserver.watchOptions": {},
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact"
+  }
+}
