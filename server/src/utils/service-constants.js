@@ -10,10 +10,10 @@ module.exports = {
         PORT: 5432
     },
     MONGO: {
-        USER: "mongoadmin",
-        HOST: "localhost", //mongo
+        USER: "user1",
+        HOST: "devconnector.goa4u.mongodb.net", //mongo
         DATABASE: "demo",
-        PASSWORD: "123",
+        PASSWORD: "Bryllyant_2020",
         PORT: 27017
     },
     AUTH: {
