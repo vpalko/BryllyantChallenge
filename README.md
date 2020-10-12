@@ -21,3 +21,8 @@ docker-compose -f docker-compose-MD.yaml up // to use MONGODB
 // docker-compose -f docker-compose-PG.yaml up // to use POSTGRES DB
 docker-compose logs -f
 ```
+
+## UI login credentials
+
+` user:` admin@example.com  
+` pwd:` password
