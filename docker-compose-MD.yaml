@@ -47,7 +47,7 @@ services:
       MONGO_INITDB_PASSWORD: 123
     restart: unless-stopped
     volumes:
-      - /mongodata:/data/db
+      - /Users/mongodata:/data/db
   
 networks:
     private:
